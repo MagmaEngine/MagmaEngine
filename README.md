@@ -4,16 +4,22 @@ Whole thing written in C/opengl/python/+?
 Meson compiled with clang
 
 Game struct
-    gameplay
-    controls
-    Game loop
-    level(s)
-    renderer
-    player(s)
-    interface
+    Engine
+        gui framework
+        renderer
+        controls
+    Game
+        gameplay
+        controls
+        Game loop
+        level(s)
+        player(s)
+        interface
 
 Handle media assets
 Save project
 
-very compatible with blender
+Goals
+    very compatible with blender
+    All written in C and opengl
 
