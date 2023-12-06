@@ -13,6 +13,8 @@ Support for
 
 ## ChaosMatrix (Physics Engine)
 
+## Enigma (Utilities)
+
 Names
 DarkEngine
 ChaosMatrix

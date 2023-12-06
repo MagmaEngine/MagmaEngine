@@ -9,10 +9,12 @@ project('DarkEngine', 'c',
     ])
 
 subdir('src/Obsidian')
+subdir('src/Enigma')
 
 executable('dark',
            'src/main.c',
            dependencies : [
              libobsidian_dep,
+             libenigma_dep,
             ],
            install : false)
