@@ -1,0 +1,3 @@
+[submodule "src/Obsidian"]
+	path = src/Obsidian
+	url = git@dullahan.lan:DarkEngine/Obsidian.git

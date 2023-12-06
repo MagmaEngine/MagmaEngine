@@ -1,4 +1,4 @@
-project('gameengine', 'c',
+project('DarkEngine', 'c',
   version : '0.0.1',
   default_options : [
     'buildtype=debug',
@@ -8,9 +8,11 @@ project('gameengine', 'c',
     'b_lundef=false'
     ])
 
-executable('engine',
+subdir('src/Obsidian')
+
+executable('dark',
            'src/main.c',
            dependencies : [
-             dependency('x11'),
-             ],
+             libobsidian_dep,
+            ],
            install : false)

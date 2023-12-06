@@ -1,4 +1,23 @@
-# Game Engine
+# Dark Engine
+Game Engine
+
+## Obsidian (Graphics library)
+Support for
+ - linux
+ - steamdeck
+ - windows (maybe?)
+
+## Phantom (GUI Framework)
+
+## Abyss (Renderer)
+
+## ChaosMatrix (Physics Engine)
+
+Names
+DarkEngine
+ChaosMatrix
+ShadowBlade
+EclipseRender
 
 Whole thing written in C/opengl/python/+?
 Meson compiled with clang
