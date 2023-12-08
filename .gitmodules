@@ -1,3 +1,6 @@
-[submodule "src/Obsidian"]
-	path = src/Obsidian
-	url = git@dullahan.lan:DarkEngine/Obsidian.git
+[submodule "src/enigma"]
+	path = src/enigma
+	url = git@dullahan.lan:DarkEngine/enigma.git
+[submodule "src/obsidian"]
+	path = src/obsidian
+	url = git@dullahan.lan:DarkEngine/obsidian.git
