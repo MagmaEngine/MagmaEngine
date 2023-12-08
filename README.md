@@ -1,13 +1,12 @@
 # Dark Engine
 Game Engine
 
-## Obsidian (Graphics library)
-Support for
+## Phantom (Graphics library)Support for
  - linux
  - steamdeck
  - windows (maybe?)
 
-## Phantom (GUI Framework)
+## Obsidian (GUI Framework)
 
 ## Abyss (Renderer)
 
