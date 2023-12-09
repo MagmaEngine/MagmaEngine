@@ -1,7 +1,16 @@
 # Dark Engine
 Game Engine
 
-## Phantom (Graphics library)Support for
+TODO:
+ - Unit tests
+ - Performance framework
+
+## Phantom (Graphics library)
+
+TODO:
+ - X11 Window creation framework
+
+Support for
  - linux
  - steamdeck
  - windows (maybe?)
@@ -20,7 +29,7 @@ ChaosMatrix
 ShadowBlade
 EclipseRender
 
-Whole thing written in C/opengl/python/+?
+Whole thing written in C/vulkan?
 Meson compiled with clang
 
 Game struct
@@ -41,5 +50,5 @@ Save project
 
 Goals
     very compatible with blender
-    All written in C and opengl
+    All written in C and vulkan
 
