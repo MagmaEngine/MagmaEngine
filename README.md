@@ -14,6 +14,7 @@ Support for
  - linux
  - steamdeck
  - windows (maybe?)
+ - musl?
 
 ## Obsidian (GUI Framework)
 
@@ -52,3 +53,13 @@ Goals
     very compatible with blender
     All written in C and vulkan
 
+
+### Coding standards:
+"l" stands for library
+
+variable:   l_underscore_lowercase_variable_names
+function:   l_thing_verb()
+struct:     LStructsAreUpperCamelCase
+enum:       LEnumTypesAreUpperCamelCase
+defines:    _PRIVATE_DEFINES
+            L_PUBLIC_DEFINES

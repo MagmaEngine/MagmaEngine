@@ -4,8 +4,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-edynarr *a(void);
-
 /**
  * MAIN Function
  */
@@ -14,8 +12,17 @@ main (int argc, char *argv[])
 {
 	int *i;
 	i = malloc(sizeof *i);
-	ph_window_create(400, 200, 1280, 720);
-	sleep(5);
-	ph_window_close();
+
+	PWindowSettings ws;
+	ws.name = "DarkEngine Test";
+	ws.x = 400;
+	ws.y = 200;
+	ws.width = 1280;
+	ws.height = 720;
+	ws.display_type = P_DISPLAY_WINDOWED;
+	ws.interact_type = P_INTERACT_INPUT_OUTPUT;
+
+	DisplayInfo *di = p_window_create(ws);
+	p_window_close(di);
 	return 0;
 }
