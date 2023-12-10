@@ -10,7 +10,7 @@
 int
 main (int argc, char *argv[])
 {
-	int *i;
+	EFloat *i;
 	i = malloc(sizeof *i);
 
 	PWindowSettings ws;
@@ -19,10 +19,10 @@ main (int argc, char *argv[])
 	ws.y = 200;
 	ws.width = 1280;
 	ws.height = 720;
-	ws.display_type = P_DISPLAY_WINDOWED;
+	ws.display_type = P_DISPLAY_FULLSCREEN;
 	ws.interact_type = P_INTERACT_INPUT_OUTPUT;
 
-	DisplayInfo *di = p_window_create(ws);
+	PDisplayInfo *di = p_window_create(ws);
 	p_window_close(di);
 	return 0;
 }
