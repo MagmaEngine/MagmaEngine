@@ -10,6 +10,7 @@ project('DarkEngine', 'c',
   ])
 cc = meson.get_compiler('c')
 
+dark_sources = []
 
 # Set up dep list
 dep_vulkan = dependency('vulkan', required : true)
@@ -20,9 +21,11 @@ dep_m = cc.find_library('m', required : false)
 if host_machine.system() == 'windows'
   build_phantom = 'windows'
   add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
+  dark_sources += 'src/winmain.c'
 else
   dep_wayland = dependency('wayland-client', required : false)
   dep_x11 = dependency('x11', required : false)
+  dark_sources += 'src/main.c'
 # X11
   if dep_x11.found()
     build_phantom = 'x11'
@@ -30,7 +33,7 @@ else
 # Wayland
   elif dep_wayland.found()
     build_phantom = 'wayland'
-    add_project_arguments('-D_PHANTOM_X11', language: 'c')
+    add_project_arguments('-D_PHANTOM_WAYLAND', language: 'c')
   endif
 endif
 
@@ -44,7 +47,7 @@ subdir('src/phantom')
 
 dark = executable(
   'dark',
-  'src/main.c',
+  sources : dark_sources,
   dependencies : [
     dep_libenigma,
     dep_libphantom,
