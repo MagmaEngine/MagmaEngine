@@ -7,23 +7,37 @@ project('DarkEngine', 'c',
     'c_std=c99',
     'b_sanitize=address',
     'b_lundef=false'
-])
+  ])
 cc = meson.get_compiler('c')
 
+
 # Set up dep list
-x11_dep = dependency('x11', required : false)
-vulkan_dep = dependency('vulkan', required : false)
-m_dep = cc.find_library('m', required : false)
+dep_vulkan = dependency('vulkan', required : true)
+dep_m = cc.find_library('m', required : false)
+
+## Phantom build setup
+# Windows
+if host_machine.system() == 'windows'
+  build_phantom = 'windows'
+  add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
+else
+  dep_wayland = dependency('wayland-client', required : false)
+  dep_x11 = dependency('x11', required : false)
+# X11
+  if dep_x11.found()
+    build_phantom = 'x11'
+    add_project_arguments('-D_PHANTOM_X11', language: 'c')
+# Wayland
+  elif dep_wayland.found()
+    build_phantom = 'wayland'
+    add_project_arguments('-D_PHANTOM_X11', language: 'c')
+  endif
+endif
 
 # ARGS as options for ENIGMA
 add_project_arguments('-DE_DOUBLE_PRECISION', language: 'c')
 add_project_arguments('-DE_MEM_DEBUG', language: 'c')
 add_project_arguments('-DE_EXIT_CRASH', language: 'c')
-
-# ARGS as options for PHANTOM
-if x11_dep.found()
-  add_project_arguments('-D_PHANTOM_X11', language: 'c')
-endif
 
 subdir('src/enigma')
 subdir('src/phantom')
@@ -32,8 +46,9 @@ dark = executable(
   'dark',
   'src/main.c',
   dependencies : [
-    libenigma_dep,
-    libphantom_dep,
+    dep_libenigma,
+    dep_libphantom,
   ],
+  win_subsystem : 'windows',
   install : false)
 

@@ -1,7 +1,6 @@
 #include "main.h"
 #include "enigma.h"
 #include "phantom.h"
-#include <unistd.h>
 #include <stdio.h>
 
 /**
@@ -21,6 +20,7 @@ main (int argc, char *argv[])
 	ws.height = 720;
 	ws.display_type = P_DISPLAY_FULLSCREEN;
 	ws.interact_type = P_INTERACT_INPUT_OUTPUT;
+	ws.framerate = 60;
 
 	PDisplayInfo *di = p_window_create(ws);
 	p_window_close(di);
