@@ -24,7 +24,7 @@ if host_machine.system() == 'windows'
   dark_sources += 'src/winmain.c'
 else
   dep_wayland = dependency('wayland-client', required : false)
-  dep_x11 = dependency('x11', required : false)
+  dep_x11 = dependency('xcb', required : false)
   dark_sources += 'src/main.c'
 # X11
   if dep_x11.found()

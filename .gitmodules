@@ -1,6 +1,8 @@
 [submodule "src/enigma"]
 	path = src/enigma
-	url = git@dullahan.lan:DarkEngine/enigma.git
+	url = git@deltafortress.hopto.me:DarkEngine/enigma.git
+	branch = main
 [submodule "src/phantom"]
 	path = src/phantom
-	url = git@dullahan.lan:DarkEngine/phantom.git
+	url = git@deltafortress.hopto.me:DarkEngine/phantom.git
+	branch = main
