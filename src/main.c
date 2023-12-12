@@ -23,6 +23,7 @@ main (int argc, char *argv[])
 	ws.interact_type = P_INTERACT_INPUT_OUTPUT;
 	ws.framerate = 60;
 
+	printf("making windowed fullscreen\n");
 	PDisplayInfo *di = p_window_create(&ws);
 	sleep(5);
 	printf("making windowed\n");
