@@ -11,11 +11,12 @@
 int
 main (int argc, char *argv[])
 {
-	// Needed to support wide chars
+	// Set to same locale as system
 	setlocale(LC_ALL, "");
 
 	EFloat *i;
 	i = malloc(sizeof *i);
+	free(i);
 
 	PWindowRequest window_request;
 	window_request.name = L"DarkEngine Test 😀";
