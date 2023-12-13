@@ -7,13 +7,15 @@ project('DarkEngine', 'c',
     'c_std=c99',
     'b_sanitize=address',
     'b_lundef=false'
-  ])
+    ])
 cc = meson.get_compiler('c')
 
 dark_sources = []
 
 # Set up dep list
 dep_vulkan = dependency('vulkan', required : true)
+dep_evdev = dependency('libevdev', required : true)
+dep_udev = dependency('libudev', required : true)
 dep_m = cc.find_library('m', required : false)
 
 ## Phantom build setup
