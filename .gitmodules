@@ -2,7 +2,9 @@
 	path = src/enigma
 	url = git@deltafortress.hopto.me:DarkEngine/enigma.git
 	branch = main
+	ignore = all
 [submodule "src/phantom"]
 	path = src/phantom
 	url = git@deltafortress.hopto.me:DarkEngine/phantom.git
 	branch = main
+	ignore = all
