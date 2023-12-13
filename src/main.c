@@ -1,7 +1,9 @@
 #include "main.h"
 #include "enigma.h"
 #include "phantom.h"
-#include <stdio.h>
+#include <unistd.h>
+#include <wchar.h>
+#include <locale.h>
 
 /**
  * MAIN Function
@@ -9,31 +11,25 @@
 int
 main (int argc, char *argv[])
 {
-	e_debug_memory_init(NULL, NULL, NULL);
+	// Needed to support wide chars
+	setlocale(LC_ALL, "");
+
 	EFloat *i;
 	i = malloc(sizeof *i);
 
-	PWindowSettings ws;
-	ws.name = "DarkEngine Test";
-	ws.x = 400;
-	ws.y = 200;
-	ws.width = 1280;
-	ws.height = 720;
-	ws.display_type = P_DISPLAY_WINDOWED_FULLSCREEN;
-	ws.interact_type = P_INTERACT_INPUT_OUTPUT;
-	ws.framerate = 60;
+	PWindowRequest window_request;
+	window_request.name = L"DarkEngine Test 😀";
+	window_request.x = 400;
+	window_request.y = 200;
+	window_request.width = 1280;
+	window_request.height = 720;
+	window_request.display_type = P_DISPLAY_WINDOWED;
+	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
 
-	printf("making windowed fullscreen\n");
-	PDisplayInfo *di = p_window_create(&ws);
-	sleep(5);
-	printf("making windowed\n");
-	p_window_windowed(di, &ws);
-	sleep(5);
-	printf("making fullscreen\n");
-	p_window_fullscreen(di, &ws);
-	sleep(5);
+	PAppInstance *app_instance = p_app_init(&window_request);
+	sleep(1);
+	p_app_deinit(app_instance);
 
-	p_window_close(di);
-	free(i);
+
 	return 0;
 }

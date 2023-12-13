@@ -20,28 +20,31 @@ dep_m = cc.find_library('m', required : false)
 
 ## Phantom build setup
 # Windows
-if host_machine.system() == 'windows'
-  build_phantom = 'windows'
+target_os = host_machine.system()
+if target_os == 'windows'
+  target_display = 'windows'
   add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
+  add_project_arguments('-D_PHANTOM_WINDOWS', language : 'c')
   dark_sources += 'src/winmain.c'
-else
+elif target_os == 'linux'
+  add_project_arguments('-D_PHANTOM_LINUX', language : 'c')
   dep_wayland = dependency('wayland-client', required : false)
   dep_x11 = dependency('xcb', required : false)
   dark_sources += 'src/main.c'
 # X11
   if dep_x11.found()
-    build_phantom = 'x11'
+    target_display = 'x11'
     add_project_arguments('-D_PHANTOM_X11', language: 'c')
 # Wayland
   elif dep_wayland.found()
-    build_phantom = 'wayland'
+    target_display = 'wayland'
     add_project_arguments('-D_PHANTOM_WAYLAND', language: 'c')
   endif
 endif
 
 # ARGS as options for ENIGMA
 add_project_arguments('-DE_DOUBLE_PRECISION', language: 'c')
-add_project_arguments('-DE_MEM_DEBUG', language: 'c')
+#add_project_arguments('-DE_MEM_DEBUG', language: 'c')
 add_project_arguments('-DE_EXIT_CRASH', language: 'c')
 
 subdir('src/enigma')
