@@ -14,10 +14,6 @@ main (int argc, char *argv[])
 	// Set to same locale as system
 	setlocale(LC_ALL, "");
 
-	EFloat *i;
-	i = malloc(sizeof *i);
-	free(i);
-
 	PWindowRequest window_request;
 	window_request.name = L"DarkEngine Test 😀";
 	window_request.x = 400;
@@ -28,9 +24,7 @@ main (int argc, char *argv[])
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
 
 	PAppInstance *app_instance = p_app_init(&window_request);
-	sleep(1);
 	p_app_deinit(app_instance);
-
 
 	return 0;
 }
