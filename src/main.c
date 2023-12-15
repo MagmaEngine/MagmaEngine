@@ -1,9 +1,20 @@
 #include "main.h"
 #include "enigma.h"
 #include "phantom.h"
+#include <stdio.h>
 #include <unistd.h>
 #include <wchar.h>
-#include <locale.h>
+
+/**
+ * print_event_type
+ *
+ * Custom test function for printing window events
+ */
+void print_event_type(void *args)
+{
+	xcb_generic_event_t *event = (xcb_generic_event_t *)args;
+	printf("EVENT: %i\n", event->response_type);
+}
 
 /**
  * MAIN Function
@@ -11,8 +22,7 @@
 int
 main (int argc, char *argv[])
 {
-	// Set to same locale as system
-	setlocale(LC_ALL, "");
+	PAppInstance *app_instance = p_app_init();
 
 	PWindowRequest window_request;
 	window_request.name = L"DarkEngine Test 😀";
@@ -22,8 +32,30 @@ main (int argc, char *argv[])
 	window_request.height = 720;
 	window_request.display_type = P_DISPLAY_WINDOWED;
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
+	window_request.event_calls.enable_client = true;
+	window_request.event_calls.enable_configure = true;
+	window_request.event_calls.enable_destroy = true;
+	window_request.event_calls.enable_enter = true;
+	window_request.event_calls.enable_expose = true;
+	window_request.event_calls.enable_focus_in = true;
+	window_request.event_calls.enable_focus_out = true;
+	window_request.event_calls.enable_leave = true;
+	window_request.event_calls.enable_map = true;
+	window_request.event_calls.enable_property = true;
+	window_request.event_calls.enable_unmap = true;
+	window_request.event_calls.client = print_event_type;
+	window_request.event_calls.configure = print_event_type;
+	window_request.event_calls.destroy = print_event_type;
+	window_request.event_calls.enter = print_event_type;
+	window_request.event_calls.expose = print_event_type;
+	window_request.event_calls.focus_in = print_event_type;
+	window_request.event_calls.focus_out = print_event_type;
+	window_request.event_calls.leave = print_event_type;
+	window_request.event_calls.map = print_event_type;
+	window_request.event_calls.property = print_event_type;
+	window_request.event_calls.unmap = print_event_type;
 
-	PAppInstance *app_instance = p_app_init(&window_request);
+	p_window_create(app_instance, window_request);
 	p_app_deinit(app_instance);
 
 	return 0;
