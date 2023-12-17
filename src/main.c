@@ -13,7 +13,7 @@
 void print_event_type(void *args)
 {
 	xcb_generic_event_t *event = (xcb_generic_event_t *)args;
-	printf("EVENT: %i\n", event->response_type);
+	//printf("EVENT: %i\n", event->response_type);
 }
 
 /**
@@ -25,12 +25,12 @@ main (int argc, char *argv[])
 	PAppInstance *app_instance = p_app_init();
 
 	PWindowRequest window_request;
-	window_request.name = L"DarkEngine Test 😀";
 	window_request.x = 400;
 	window_request.y = 200;
 	window_request.width = 1280;
 	window_request.height = 720;
-	window_request.display_type = P_DISPLAY_WINDOWED;
+	window_request.name = L"DarkEngine Test 😀";
+	window_request.display_type = P_DISPLAY_WINDOWED_FULLSCREEN;
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
 	window_request.event_calls.enable_client = true;
 	window_request.event_calls.enable_configure = true;
@@ -56,6 +56,17 @@ main (int argc, char *argv[])
 	window_request.event_calls.unmap = print_event_type;
 
 	p_window_create(app_instance, window_request);
+	usleep(100000);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+
+	p_window_windowed_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
+	usleep(100000);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+
+	p_window_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
+	usleep(100000);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+
 	p_app_deinit(app_instance);
 
 	return 0;
