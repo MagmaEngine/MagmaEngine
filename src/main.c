@@ -30,7 +30,7 @@ main (int argc, char *argv[])
 	window_request.width = 1280;
 	window_request.height = 720;
 	window_request.name = L"DarkEngine Test 😀";
-	window_request.display_type = P_DISPLAY_WINDOWED_FULLSCREEN;
+	window_request.display_type = P_DISPLAY_FULLSCREEN;
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
 	window_request.event_calls.enable_client = true;
 	window_request.event_calls.enable_configure = true;
@@ -56,15 +56,16 @@ main (int argc, char *argv[])
 	window_request.event_calls.unmap = print_event_type;
 
 	p_window_create(app_instance, window_request);
-	usleep(100000);
+	sleep(1);
 	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
+	// TODO: fix bug in xfce4 that doesn't update window_settings
 	p_window_windowed_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
-	usleep(100000);
+	sleep(1);
 	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
 	p_window_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
-	usleep(100000);
+	sleep(1);
 	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
 	p_app_deinit(app_instance);
