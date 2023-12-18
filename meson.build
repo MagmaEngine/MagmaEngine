@@ -4,7 +4,7 @@ project('DarkEngine', 'c',
     'buildtype=debug',
     'default_library=static',
     'warning_level=3',
-    'c_std=c99',
+    'c_std=c17',
     'b_sanitize=address',
     'b_lundef=false'
     ])
