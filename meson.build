@@ -4,13 +4,14 @@ project('DarkEngine', 'c',
     'buildtype=debug',
     'default_library=static',
     'warning_level=3',
-    'c_std=c17',
+    'c_std=c99',
     'b_sanitize=address',
     'b_lundef=false'
     ])
 cc = meson.get_compiler('c')
 
 dark_srcs = []
+dark_deps = []
 
 # Set up dep list
 dep_vulkan = dependency('vulkan', required : false)
@@ -22,9 +23,11 @@ if target_os == 'windows'
   target_display = 'windows'
   add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
   add_project_arguments('-D_PHANTOM_WINDOWS', language : 'c')
+  add_project_arguments('-D_ENIGMA_WINDOWS', language : 'c')
   dark_srcs += 'src/winmain.c'
 elif target_os == 'linux'
   add_project_arguments('-D_PHANTOM_LINUX', language : 'c')
+  add_project_arguments('-D_ENIGMA_LINUX', language : 'c')
   dep_wayland = dependency('wayland-client', required : false)
   dep_x11 = dependency('xcb', required : false)
   dark_srcs += 'src/main.c'
@@ -47,13 +50,12 @@ add_project_arguments('-DE_EXIT_CRASH', language: 'c')
 subdir('src/enigma')
 subdir('src/phantom')
 
+dark_deps += [ dep_libenigma, dep_libphantom ]
+
 dark = executable(
   'dark',
   sources : dark_srcs,
-  dependencies : [
-    dep_libenigma,
-    dep_libphantom,
-  ],
+  dependencies : dark_deps,
   win_subsystem : 'windows',
   install : false)
 
