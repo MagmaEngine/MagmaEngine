@@ -5,32 +5,33 @@ project('DarkEngine', 'c',
     'default_library=static',
     'warning_level=3',
     'c_std=c99',
-    'b_sanitize=address',
+    #'b_sanitize=address',
     'b_lundef=false'
     ])
 cc = meson.get_compiler('c')
 
-dark_srcs = []
+dark_srcs = [ 'src/main.c' ]
 dark_deps = []
 
 # Set up dep list
 dep_vulkan = dependency('vulkan', required : false)
 
+target_os = host_machine.system()
+message('Host OS: ' + target_os)
+
 ## Phantom build setup
 # Windows
-target_os = host_machine.system()
 if target_os == 'windows'
   target_display = 'windows'
   add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
   add_project_arguments('-D_PHANTOM_WINDOWS', language : 'c')
   add_project_arguments('-D_ENIGMA_WINDOWS', language : 'c')
-  dark_srcs += 'src/winmain.c'
+# Linux
 elif target_os == 'linux'
   add_project_arguments('-D_PHANTOM_LINUX', language : 'c')
   add_project_arguments('-D_ENIGMA_LINUX', language : 'c')
   dep_wayland = dependency('wayland-client', required : false)
   dep_x11 = dependency('xcb', required : false)
-  dark_srcs += 'src/main.c'
 # X11
   if dep_x11.found()
     target_display = 'x11'
@@ -56,6 +57,7 @@ dark = executable(
   'dark',
   sources : dark_srcs,
   dependencies : dark_deps,
+  include_directories: include_directories('src'),
   win_subsystem : 'windows',
   install : false)
 

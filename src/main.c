@@ -12,8 +12,13 @@
  */
 void print_event_type(void *args)
 {
+#ifdef _PHANTOM_LINUX
 	xcb_generic_event_t *event = (xcb_generic_event_t *)args;
-	//printf("EVENT: %i\n", event->response_type);
+	printf("EVENT: %i\n", event->response_type);
+#endif
+#ifdef _PHANTOM_WINDOWS
+	printf("EVENT occured!\n");
+#endif
 }
 
 /**
@@ -57,19 +62,21 @@ main (int argc, char *argv[])
 
 	p_window_create(app_instance, window_request);
 	sleep(1);
-	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
-	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info, 401, 200, 1600, 1000);
-	//sleep(1);
-	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	//while(app_instance->window_settings->num_items)
+	//	usleep(1000);
 
-	//p_window_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
-	//sleep(1);
-	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info, 401, 200, 1600, 1000);
+	sleep(1);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
-	//p_window_docked_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
-	//sleep(1);
-	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	p_window_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
+	sleep(1);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+
+	p_window_docked_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]->display_info);
+	sleep(1);
+	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
 	p_app_deinit(app_instance);
 	usleep(1000);
