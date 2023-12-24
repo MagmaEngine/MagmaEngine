@@ -10,15 +10,9 @@
  *
  * Custom test function for printing window events
  */
-void print_event_type(void *args)
+void print_event(void)
 {
-#ifdef _PHANTOM_LINUX
-	xcb_generic_event_t *event = (xcb_generic_event_t *)args;
-	printf("EVENT: %i\n", event->response_type);
-#endif
-#ifdef _PHANTOM_WINDOWS
 	printf("EVENT occured!\n");
-#endif
 }
 
 /**
@@ -45,20 +39,19 @@ main (int argc, char *argv[])
 	window_request.event_calls.enable_focus_in = true;
 	window_request.event_calls.enable_focus_out = true;
 	window_request.event_calls.enable_leave = true;
-	window_request.event_calls.enable_map = true;
 	window_request.event_calls.enable_property = true;
-	window_request.event_calls.enable_unmap = true;
-	window_request.event_calls.client = print_event_type;
-	window_request.event_calls.configure = print_event_type;
-	window_request.event_calls.destroy = print_event_type;
-	window_request.event_calls.enter = print_event_type;
-	window_request.event_calls.expose = print_event_type;
-	window_request.event_calls.focus_in = print_event_type;
-	window_request.event_calls.focus_out = print_event_type;
-	window_request.event_calls.leave = print_event_type;
-	window_request.event_calls.map = print_event_type;
-	window_request.event_calls.property = print_event_type;
-	window_request.event_calls.unmap = print_event_type;
+	window_request.event_calls.client = print_event;
+	window_request.event_calls.configure = print_event;
+	window_request.event_calls.destroy = print_event;
+	window_request.event_calls.enter = print_event;
+	window_request.event_calls.expose = print_event;
+	window_request.event_calls.focus_in = print_event;
+	window_request.event_calls.focus_out = print_event;
+	window_request.event_calls.leave = print_event;
+	window_request.event_calls.property = print_event;
+
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
 
 	p_window_create(app_instance, window_request);
 	sleep(1);
@@ -66,6 +59,7 @@ main (int argc, char *argv[])
 
 	while(app_instance->window_settings->num_items)
 		usleep(1000);
+	sleep(10);
 
 	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 401, 200, 1600, 1000);
 	//sleep(1);
@@ -81,6 +75,8 @@ main (int argc, char *argv[])
 
 	p_app_deinit(app_instance);
 	usleep(1000);
+
+	FreeConsole();
 
 	return 0;
 }
