@@ -31,15 +31,15 @@ main (int argc, char *argv[])
 	window_request.name = L"DarkEngine Test 😀";
 	window_request.display_type = P_DISPLAY_WINDOWED;
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
-	window_request.event_calls.enable_client = true;
-	window_request.event_calls.enable_configure = true;
-	window_request.event_calls.enable_destroy = true;
-	window_request.event_calls.enable_enter = true;
-	window_request.event_calls.enable_expose = true;
-	window_request.event_calls.enable_focus_in = true;
-	window_request.event_calls.enable_focus_out = true;
-	window_request.event_calls.enable_leave = true;
-	window_request.event_calls.enable_property = true;
+	window_request.event_calls.enable_client = false;
+	window_request.event_calls.enable_configure = false;
+	window_request.event_calls.enable_destroy = false;
+	window_request.event_calls.enable_enter = false;
+	window_request.event_calls.enable_expose = false;
+	window_request.event_calls.enable_focus_in = false;
+	window_request.event_calls.enable_focus_out = false;
+	window_request.event_calls.enable_leave = false;
+	window_request.event_calls.enable_property = false;
 	window_request.event_calls.client = print_event;
 	window_request.event_calls.configure = print_event;
 	window_request.event_calls.destroy = print_event;
@@ -50,16 +50,7 @@ main (int argc, char *argv[])
 	window_request.event_calls.leave = print_event;
 	window_request.event_calls.property = print_event;
 
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-
 	p_window_create(app_instance, window_request);
-	sleep(1);
-	printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
-
-	while(app_instance->window_settings->num_items)
-		usleep(1000);
-	sleep(10);
 
 	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 401, 200, 1600, 1000);
 	//sleep(1);
@@ -73,10 +64,15 @@ main (int argc, char *argv[])
 	//sleep(1);
 	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
-	p_app_deinit(app_instance);
-	usleep(1000);
+	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 400, 200, 1280, 720);
+	//sleep(1);
+	//printf("%i\n", ((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
-	FreeConsole();
+	while(app_instance->window_settings->num_items)
+		usleep(10000);
+
+	p_app_deinit(app_instance);
+	sleep(1);
 
 	return 0;
 }

@@ -23,6 +23,8 @@ message('Host OS: ' + target_os)
 # Windows
 if target_os == 'windows'
   target_display = 'windows'
+  add_project_arguments('-D_UNICODE', language : 'c')
+  add_project_arguments('-municode', language : 'c')
   add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
   add_project_arguments('-D_PHANTOM_WINDOWS', language : 'c')
   add_project_arguments('-D_ENIGMA_WINDOWS', language : 'c')
