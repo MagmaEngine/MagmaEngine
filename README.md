@@ -4,6 +4,9 @@ Game Engine
 TODO:
  - Unit tests
  - Performance framework
+ - Renderer
+ - Capture input
+ - GUI widgets
 
 ## Phantom (Graphics library)
 

@@ -5,55 +5,59 @@ project('DarkEngine', 'c',
     'default_library=static',
     'warning_level=3',
     'c_std=c99',
-    #'b_sanitize=address',
+    'b_sanitize=address',
     'b_lundef=false'
     ])
-cc = meson.get_compiler('c')
 
-dark_srcs = [ 'src/main.c' ]
-dark_deps = []
+message('Host OS: ' + host_machine.system())
+add_global_arguments('-D_UNICODE', language : 'c')
+add_global_arguments('-municode', language : 'c')
 
-# Set up dep list
-dep_vulkan = dependency('vulkan', required : false)
-
-target_os = host_machine.system()
-message('Host OS: ' + target_os)
-
-## Phantom build setup
 # Windows
-if target_os == 'windows'
-  target_display = 'windows'
-  add_project_arguments('-D_UNICODE', language : 'c')
-  add_project_arguments('-municode', language : 'c')
-  add_project_arguments('-D_PHANTOM_WIN32', language : 'c')
-  add_project_arguments('-D_PHANTOM_WINDOWS', language : 'c')
-  add_project_arguments('-D_ENIGMA_WINDOWS', language : 'c')
+if host_machine.system() == 'windows'
+  add_project_arguments('-DDARK_PLATFORM_WINDOWS', language : 'c')
+  add_project_arguments('-DENIGMA_PLATFORM_WINDOWS', language : 'c')
+  add_project_arguments('-DPHANTOM_PLATFORM_WINDOWS', language : 'c')
+  add_project_arguments('-DPHANTOM_DISPLAY_WIN32', language : 'c')
 # Linux
-elif target_os == 'linux'
-  add_project_arguments('-D_PHANTOM_LINUX', language : 'c')
-  add_project_arguments('-D_ENIGMA_LINUX', language : 'c')
-  dep_wayland = dependency('wayland-client', required : false)
-  dep_x11 = dependency('xcb', required : false)
-# X11
-  if dep_x11.found()
-    target_display = 'x11'
-    add_project_arguments('-D_PHANTOM_X11', language: 'c')
-# Wayland
-  elif dep_wayland.found()
-    target_display = 'wayland'
-    add_project_arguments('-D_PHANTOM_WAYLAND', language: 'c')
-  endif
+elif host_machine.system() == 'linux'
+  add_project_arguments('-DDARK_PLATFORM_LINUX', language : 'c')
+  add_project_arguments('-DENIGMA_PLATFORM_LINUX', language : 'c')
+  add_project_arguments('-DPHANTOM_PLATFORM_LINUX', language : 'c')
 endif
 
-# ARGS as options for ENIGMA
-add_project_arguments('-DE_DOUBLE_PRECISION', language: 'c')
-#add_project_arguments('-DE_MEM_DEBUG', language: 'c')
-add_project_arguments('-DE_EXIT_CRASH', language: 'c')
+# Enigma Settings
+add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
+add_project_arguments('-DENIGMA_EXIT_CRASH', language : 'c')
+#add_project_arguments('-DENIGMA_MEM_DEBUG', language : 'c')
+
+## Phantom Display Settings
+dep_ncurses = dependency('ncurses', required : false)
+if host_machine.system() == 'linux'
+  dep_wayland = dependency('wayland-client', required : false)
+  dep_x11 = [
+    dependency('xcb', required : false),
+    dependency('xcb-image', required : false),
+    ]
+# X11
+  if dep_x11[0].found() and dep_x11[1].found()
+    add_project_arguments('-DPHANTOM_DISPLAY_X11', language : 'c')
+# Wayland
+  elif dep_wayland.found()
+    add_project_arguments('-DPHANTOM_DISPLAY_WAYLAND', language : 'c')
+# Ncurses
+  elif dep_ncurses.found()
+    add_project_arguments('-DPHANTOM_DISPLAY_NCURSES', language : 'c')
+  else
+    error('There must be at least one graphical back-end installed.')
+  endif
+endif
 
 subdir('src/enigma')
 subdir('src/phantom')
 
-dark_deps += [ dep_libenigma, dep_libphantom ]
+dark_srcs = [ 'src/main.c' ]
+dark_deps = [ dep_libenigma, dep_libphantom ]
 
 dark = executable(
   'dark',

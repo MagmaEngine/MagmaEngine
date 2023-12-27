@@ -1,6 +1,6 @@
 #include "main.h"
-#include "enigma.h"
-#include "phantom.h"
+#include <enigma.h>
+#include <phantom.h>
 #include <unistd.h>
 #include <wchar.h>
 
@@ -52,7 +52,6 @@ main (int argc, char *argv[])
 	p_window_create(app_instance, window_request);
 
 	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 401, 200, 1600, 1000);
-	sleep(1);
 	e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
 			((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
@@ -71,11 +70,11 @@ main (int argc, char *argv[])
 	//e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
 	//		((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
 
+	// MAIN LOOP
 	while(app_instance->window_settings->num_items)
 		usleep(10000);
 
 	p_app_deinit(app_instance);
-	sleep(1);
 
 	return 0;
 }
