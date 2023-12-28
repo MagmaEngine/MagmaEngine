@@ -2,7 +2,7 @@ project('DarkEngine', 'c',
   version : '0.0.1',
   default_options : [
     'buildtype=debug',
-    'default_library=static',
+    'default_library=shared',
     'warning_level=3',
     'c_std=c99',
     'b_sanitize=address',
@@ -13,6 +13,7 @@ message('Host OS: ' + host_machine.system())
 add_global_arguments('-D_UNICODE', language : 'c')
 add_global_arguments('-municode', language : 'c')
 
+# Platform settings
 # Windows
 if host_machine.system() == 'windows'
   add_project_arguments('-DDARK_PLATFORM_WINDOWS', language : 'c')
@@ -31,7 +32,9 @@ add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
 add_project_arguments('-DENIGMA_EXIT_CRASH', language : 'c')
 #add_project_arguments('-DENIGMA_MEM_DEBUG', language : 'c')
 
-## Phantom Display Settings
+# Phantom Settings
+add_project_arguments('-DPHANTOM_DEBUG_VULKAN', language : 'c')
+# Phantom Display Settings
 dep_ncurses = dependency('ncurses', required : false)
 if host_machine.system() == 'linux'
   dep_wayland = dependency('wayland-client', required : false)
