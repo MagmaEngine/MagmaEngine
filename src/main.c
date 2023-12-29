@@ -51,24 +51,25 @@ main (int argc, char *argv[])
 
 	p_window_create(app_instance, window_request);
 
-	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 401, 200, 1600, 1000);
-	e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
-			((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
-
-	//p_window_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]);
+	//p_window_windowed(E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0), 401, 200, 1600, 1000);
 	//sleep(1);
 	//e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
-	//		((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	//		E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0)->display_type);
 
-	//p_window_docked_fullscreen(((PWindowSettings **)app_instance->window_settings->arr)[0]);
+	//p_window_fullscreen(E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0));
 	//sleep(1);
 	//e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
-	//		((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	//		E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0)->display_type);
 
-	//p_window_windowed(((PWindowSettings **)app_instance->window_settings->arr)[0], 400, 200, 1280, 720);
+	//p_window_docked_fullscreen(E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0));
 	//sleep(1);
 	//e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
-	//		((PWindowSettings **)app_instance->window_settings->arr)[0]->display_type);
+	//		E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0)->display_type);
+
+	//p_window_windowed(E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0), 400, 200, 1280, 720);
+	//sleep(1);
+	//e_log_message(E_LOG_INFO, L"Main", L"Display Type: %i",
+	//		E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0)->display_type);
 
 	// MAIN LOOP
 	while(app_instance->window_settings->num_items)
