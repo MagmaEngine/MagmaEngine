@@ -2,7 +2,7 @@ project('DarkEngine', 'c',
   version : '0.0.1',
   default_options : [
     'buildtype=debug',
-    'default_library=shared',
+    'default_library=static',
     'warning_level=3',
     'c_std=c99',
     'b_sanitize=address',
