@@ -72,7 +72,7 @@ main (int argc, char *argv[])
 	//		E_DYNARR_GET(app_instance->window_settings, PWindowSettings *, 0)->display_type);
 
 	// MAIN LOOP
-	while(app_instance->window_settings->num_items)
+	while(app_instance->window_data->num_items)
 		usleep(10000);
 
 	p_app_deinit(app_instance);
