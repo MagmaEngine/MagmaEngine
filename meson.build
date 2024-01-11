@@ -5,8 +5,8 @@ project('DarkEngine', 'c',
     'default_library=static',
     'warning_level=3',
     'c_std=c99',
-    #'b_sanitize=address',
-    #'b_lundef=false',
+    'b_sanitize=address',
+    'b_lundef=false',
     ])
 
 library_buildtype = get_option('library_buildtype')
