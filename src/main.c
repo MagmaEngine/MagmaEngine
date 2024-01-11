@@ -1,8 +1,11 @@
 #include "main.h"
 #include <enigma.h>
 #include <phantom.h>
-#include <unistd.h>
 #include <wchar.h>
+
+#ifdef _MSC_VER
+#    pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif
 
 /**
  * print_event_type
@@ -73,7 +76,7 @@ main (int argc, char *argv[])
 
 	// MAIN LOOP
 	while(app_instance->window_data->num_items)
-		usleep(10000);
+		e_sleep_ms(10);
 
 	p_app_deinit(app_instance);
 

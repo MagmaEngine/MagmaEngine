@@ -1,0 +1,10 @@
+# Libraries
+option('library_buildtype', type : 'combo', choices : ['shared', 'static'], value : 'static', description : 'Compile the program with either shared or static libraries')
+
+# Debug
+option('debug_crash_on_error', type : 'boolean', value : 'true', description : 'Crashes the program if any error occurs')
+option('debug_memory', type : 'boolean', value : 'true', description : 'Enable memory tracking. Significantly slows program')
+option('debug_vulkan', type : 'boolean', value : 'true', description : 'Enable vulkan validation layers and verbose output')
+
+# Math
+option('math_double_precision', type : 'feature', value : 'enabled', description : 'Enables double precision floating values')

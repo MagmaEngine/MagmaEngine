@@ -5,16 +5,18 @@ project('DarkEngine', 'c',
     'default_library=static',
     'warning_level=3',
     'c_std=c99',
-    'b_sanitize=address',
-    'b_lundef=false'
+    #'b_sanitize=address',
+    #'b_lundef=false',
     ])
 
-message('Host OS: ' + host_machine.system())
+library_buildtype = get_option('library_buildtype')
+
+message('Host OS:', host_machine.system())
 add_global_arguments('-D_UNICODE', language : 'c')
-add_global_arguments('-municode', language : 'c')
+add_global_arguments('-DUNICODE', language : 'c')
 
 display = meson.get_external_property('display')
-message('Display System: ', display)
+message('Display System:', display)
 
 # Platform settings
 # Windows
@@ -30,12 +32,20 @@ elif host_machine.system() == 'linux'
 endif
 
 # Enigma Settings
-add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
-add_project_arguments('-DENIGMA_EXIT_CRASH', language : 'c')
-add_project_arguments('-DENIGMA_DEBUG_MEMORY', language : 'c')
+if get_option('math_double_precision').enabled()
+  add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
+endif
+if get_option('debug_crash_on_error')
+  add_project_arguments('-DENIGMA_EXIT_CRASH', language : 'c')
+endif
+if get_option('debug_memory')
+  add_project_arguments('-DENIGMA_DEBUG_MEMORY', language : 'c')
+endif
 
 # Phantom Settings
-add_project_arguments('-DPHANTOM_DEBUG_VULKAN', language : 'c')
+if get_option('debug_vulkan')
+  add_project_arguments('-DPHANTOM_DEBUG_VULKAN', language : 'c')
+endif
 # Phantom Display Settings
 if display == 'x11'
   dep_display = [
@@ -55,11 +65,12 @@ else
   error('There must be at least one graphical back-end installed.')
 endif
 
+dep_vulkan = dependency('vulkan', required : true)
 subdir('src/enigma')
 subdir('src/phantom')
 
 dark_srcs = [ 'src/main.c' ]
-dark_deps = [ dep_libenigma, dep_libphantom ]
+dark_deps = [ dep_libenigma, dep_libphantom]
 
 dark = executable(
   'dark',
@@ -67,5 +78,5 @@ dark = executable(
   dependencies : dark_deps,
   include_directories: include_directories('src'),
   win_subsystem : 'windows',
-  install : false)
+  install : true)
 
