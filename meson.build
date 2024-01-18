@@ -1,13 +1,23 @@
 project('DarkEngine', 'c',
   version : '0.0.1',
   default_options : [
-    'buildtype=debug',
+    'buildtype=release',
     'default_library=static',
     'warning_level=3',
     'c_std=c99',
-    'b_sanitize=address',
-    'b_lundef=false',
+    'b_sanitize=none',
+    'b_lundef=true',
     ])
+
+runtime_conf = configuration_data()
+if get_option('b_sanitize') != 'none'
+  add_global_arguments('-fno-omit-frame-pointer', language: 'c')
+  runtime_conf.set('RUNTIME_ENVVARS',
+    'LSAN_OPTIONS=fast_unwind_on_malloc=0\ suppressions=libasan_suppression.txt ')
+else
+  runtime_conf.set('RUNTIME_ENVVARS', '')
+endif
+
 
 library_buildtype = get_option('library_buildtype')
 
@@ -78,5 +88,18 @@ dark = executable(
   dependencies : dark_deps,
   include_directories: include_directories('src'),
   win_subsystem : 'windows',
+  install_dir : '.',
   install : true)
 
+## Run Script
+# Set environment variables for the script
+your_env_vars = {'VAR1': 'value1', 'VAR2': 'value2'}
+
+# Create a custom script using configure_file
+configure_file(
+  input : 'run.sh.in',
+  output : 'DarkEngine.sh',
+  configuration : runtime_conf,
+  install_mode : 'rwxr-xr-x',
+  install_dir : '.',
+  install : true)
