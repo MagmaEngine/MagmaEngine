@@ -1,6 +1,14 @@
 # Dark Engine
 Game Engine
 
+# Compiling for debugging on Linux
+
+meson setup build --native-file linux_x11_native.ini
+meson configure build --buildtype=debug -Ddebug_memory=true -Ddebug_vulkan=true -Db_sanitize=address -Db_lundef=false
+meson compile -C build
+build/DarkEngine.sh
+meson install -C build
+
 TODO:
  - Unit tests
  - Performance framework

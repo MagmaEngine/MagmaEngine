@@ -88,7 +88,6 @@ dark = executable(
   dependencies : dark_deps,
   include_directories: include_directories('src'),
   win_subsystem : 'windows',
-  install_dir : '.',
   install : true)
 
 ## Run Script
@@ -101,5 +100,4 @@ configure_file(
   output : 'DarkEngine.sh',
   configuration : runtime_conf,
   install_mode : 'rwxr-xr-x',
-  install_dir : '.',
   install : true)
