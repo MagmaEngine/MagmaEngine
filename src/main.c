@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 {
 	PAppInstance *app_instance = p_app_init();
 
-	PWindowRequest window_request;
+	PWindowRequest window_request = {0};
 	window_request.x = 400;
 	window_request.y = 200;
 	window_request.width = 1280;
@@ -33,24 +33,6 @@ main (int argc, char *argv[])
 	window_request.name = L"DarkEngine Test 😀";
 	window_request.display_type = P_DISPLAY_WINDOWED;
 	window_request.interact_type = P_INTERACT_INPUT_OUTPUT;
-	window_request.event_calls.enable_client = false;
-	window_request.event_calls.enable_configure = false;
-	window_request.event_calls.enable_destroy = false;
-	window_request.event_calls.enable_enter = false;
-	window_request.event_calls.enable_expose = false;
-	window_request.event_calls.enable_focus_in = false;
-	window_request.event_calls.enable_focus_out = false;
-	window_request.event_calls.enable_leave = false;
-	window_request.event_calls.enable_property = false;
-	window_request.event_calls.client = print_event;
-	window_request.event_calls.configure = print_event;
-	window_request.event_calls.destroy = print_event;
-	window_request.event_calls.enter = print_event;
-	window_request.event_calls.expose = print_event;
-	window_request.event_calls.focus_in = print_event;
-	window_request.event_calls.focus_out = print_event;
-	window_request.event_calls.leave = print_event;
-	window_request.event_calls.property = print_event;
 
 	p_window_create(app_instance, window_request);
 
