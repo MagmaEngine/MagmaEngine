@@ -20,7 +20,9 @@ add_global_arguments('-D_UNICODE', language : 'c')
 add_global_arguments('-DUNICODE', language : 'c')
 
 display = meson.get_external_property('display')
+graphics = meson.get_external_property('graphics')
 message('Display System:', display)
+message('Graphics Backend:', graphics)
 
 # Platform settings
 # Windows
@@ -47,8 +49,12 @@ if get_option('debug_memory')
 endif
 
 # Phantom Settings
-if get_option('debug_vulkan')
-  add_project_arguments('-DPHANTOM_DEBUG_VULKAN', language : 'c')
+if graphics == 'vulkan'
+  add_project_arguments('-DPHANTOM_BACKEND_VULKAN', language : 'c')
+  dep_vulkan = dependency('vulkan', required : true)
+endif
+if get_option('debug_graphics')
+  add_project_arguments('-DPHANTOM_DEBUG_GRAPHICS', language : 'c')
 endif
 # Phantom Display Settings
 if display == 'x11'
@@ -69,7 +75,6 @@ else
   error('There must be at least one graphical back-end installed.')
 endif
 
-dep_vulkan = dependency('vulkan', required : true)
 subdir('src/enigma')
 subdir('src/phantom')
 
