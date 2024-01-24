@@ -1,5 +1,5 @@
-#ifndef _DARK_ENGINE_MAIN_H
-#define _DARK_ENGINE_MAIN_H
+#ifndef _ENGINE_MAIN_H
+#define _ENGINE_MAIN_H
 
 // global vars
 

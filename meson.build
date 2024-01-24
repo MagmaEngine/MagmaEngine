@@ -58,10 +58,7 @@ if get_option('debug_graphics')
 endif
 # Phantom Display Settings
 if display == 'x11'
-  dep_display = [
-    dependency('xcb', required : true),
-    dependency('xcb-image', required : true),
-    ]
+  dep_display = dependency('xcb', required : true)
   add_project_arguments('-DPHANTOM_DISPLAY_X11', language : 'c')
 elif display == 'wayland'
   dep_display = dependency('wayland-client', required : true)
@@ -78,35 +75,58 @@ endif
 subdir('src/enigma')
 subdir('src/phantom')
 
-dark_srcs = [ 'src/main.c' ]
-dark_deps = [ dep_libenigma, dep_libphantom]
+dark_srcs = [
+  'src/main.c',
+  'src/config/config.c',
+  'src/config/argparse.c',
+  ]
+
+dark_deps = [
+  dep_libenigma,
+  dep_libphantom,
+  dependency('iniparser', required : true),
+  ]
 
 dark = executable(
   'dark',
   sources : dark_srcs,
   dependencies : dark_deps,
-  include_directories: include_directories('src'),
+  include_directories: include_directories('include'),
   win_subsystem : 'windows',
+  install : true)
+
+engine_conf = configuration_data()
+engine_conf.set('PROJECTNAME', meson.project_name())
+engine_conf.set('PROJECTVERSION', meson.project_version())
+engine_conf.set('SHADERPATH', join_paths(get_option('prefix'), phantom_shader_install_path))
+engine_conf_path = 'share/DarkEngine'
+engine_conf_name = 'config.ini'
+
+engine_config = configure_file(
+  input : 'config.ini.in',
+  output : engine_conf_name,
+  configuration : engine_conf,
+  install_mode : 'rw-r--r--',
+  install_dir : engine_conf_path,
   install : true)
 
 runtime_conf = configuration_data()
 if get_option('b_sanitize') != 'none'
   install_data('lsan_suppress.txt', install_dir: 'share/DarkEngine')
   runtime_conf.set('RUNTIME_ENVVARS',
-    'LSAN_OPTIONS=fast_unwind_on_malloc=0\ suppressions=/usr/local/share/DarkEngine/lsan_suppress.txt ')
+    'LSAN_OPTIONS=fast_unwind_on_malloc=0\ suppressions=' + join_paths(get_option('prefix'), 'share/DarkEngine/lsan_suppress.txt '))
 else
   runtime_conf.set('RUNTIME_ENVVARS', '')
 endif
-
-## Run Script
-# Set environment variables for the script
-your_env_vars = {'VAR1': 'value1', 'VAR2': 'value2'}
+  runtime_conf.set('RUNTIME_ARGS',
+    ' -c ' + join_paths(get_option('prefix'), engine_conf_path, engine_conf_name))
 
 # Create a custom script using configure_file
-configure_file(
+run_script_config = configure_file(
   input : 'run.sh.in',
   output : 'DarkEngine.sh',
   configuration : runtime_conf,
   install_mode : 'rwxr-xr-x',
   install_dir : 'bin',
   install : true)
+

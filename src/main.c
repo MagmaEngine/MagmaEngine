@@ -1,33 +1,24 @@
+#include "config.h"
 #include "main.h"
-#include <enigma.h>
-#include <phantom.h>
-#include <wchar.h>
-#include <string.h>
+#include "enigma.h"
+#include "phantom.h"
+
 
 #ifdef _MSC_VER
 #    pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
 /**
- * print_event_type
- *
- * Custom test function for printing window events
- */
-void print_event(void)
-{
-	e_log_message(E_LOG_INFO, L"Main", L"EVENT occured!");
-}
-
-/**
  * app_request_create
  *
  * generates a PAppRequest and returns it
  */
-static PAppRequest *app_request_create(void)
+static PAppRequest *app_request_create(PAppConfig *app_config)
 {
 	PAppRequest *app_request = calloc(1, sizeof(PAppRequest));
 
 	app_request->graphical_app_request.headless = false;
+	app_request->app_config = app_config;
 
 	return app_request;
 }
@@ -82,8 +73,38 @@ static void window_request_destroy(PWindowRequest *window_request)
 int
 main (int argc, char *argv[])
 {
+	EDynarr *engine_args = e_dynarr_init(sizeof(EngineArg *), 1);
 
-	PAppRequest *app_request = app_request_create();
+	EngineArg arg_help = {
+			.flag = "-h",
+			.flag_long = "--help",
+			.description = "Print this help message and exit",
+			.value = false,
+			.value_str = NULL,
+			.enabled = false,
+	};
+	EngineArg arg_config = {
+			.flag = "-c",
+			.flag_long = "--config-file",
+			.description = "Path to the engine config file",
+			.value = true,
+			.value_str = NULL,
+			.enabled = false,
+	};
+	e_dynarr_add(engine_args, E_VOID_PTR_FROM_VALUE(EngineArg *, &arg_help));
+	e_dynarr_add(engine_args, E_VOID_PTR_FROM_VALUE(EngineArg *, &arg_config));
+
+	parse_args(engine_args, argc, argv);
+
+	if (arg_help.enabled)
+	{
+		print_help(engine_args);
+		return 0;
+	}
+
+	EngineConfig *config = engine_config_create(arg_config.value_str);
+
+	PAppRequest *app_request = app_request_create(config->config_phantom);
 	PAppData *app_data = p_app_init(*app_request);
 	app_request_destroy(app_request);
 

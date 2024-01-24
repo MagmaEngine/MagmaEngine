@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Run the executable with envars
-@RUNTIME_ENVVARS@dark
+@RUNTIME_ENVVARS@dark@RUNTIME_ARGS@

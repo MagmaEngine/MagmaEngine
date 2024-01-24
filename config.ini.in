@@ -1,0 +1,7 @@
+[Engine]
+name = @PROJECTNAME@
+version = @PROJECTVERSION@
+
+
+[Phantom]
+shader_path = @SHADERPATH@
