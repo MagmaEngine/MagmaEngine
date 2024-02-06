@@ -1,7 +1,7 @@
 #ifndef _ENGINE_CONFIG_H
 #define _ENGINE_CONFIG_H
 
-#include <phantom.h>
+#include <platinum.h>
 
 enum config_section {
 	CONFIG_SECTION_ENGINE,

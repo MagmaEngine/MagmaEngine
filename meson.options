@@ -1,6 +1,3 @@
-# Libraries
-option('library_buildtype', type : 'combo', choices : ['shared', 'static'], value : 'static', description : 'Compile the program with either shared or static libraries')
-
 # Debug
 option('debug_crash_on_error', type : 'boolean', value : 'true', description : 'Crashes the program if any error occurs')
 option('debug_memory', type : 'boolean', value : 'false', description : 'Enable memory tracking. Significantly slows program')
