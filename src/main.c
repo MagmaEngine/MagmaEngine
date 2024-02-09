@@ -1,7 +1,7 @@
 #include "config.h"
 #include "main.h"
-#include "enigma.h"
-#include "phantom.h"
+#include <enigma.h>
+#include <platinum.h>
 
 
 #ifdef _MSC_VER
@@ -134,7 +134,7 @@ main (int argc, char *argv[])
 
 	// MAIN LOOP
 	while(app_data->window_data->num_items)
-		e_sleep_ms(10);
+		p_sleep_ms(10);
 
 	p_app_deinit(app_data);
 

@@ -3,9 +3,9 @@
 	url = git@deltafortress.hopto.me:DarkEngine/enigma.git
 	branch = main
 	ignore = all
-[submodule "src/phantom"]
-	path = src/phantom
-	url = git@deltafortress.hopto.me:DarkEngine/phantom.git
+[submodule "src/platinum"]
+	path = src/platinum
+	url = git@deltafortress.hopto.me:DarkEngine/platinum.git
 	branch = main
 	ignore = all
 [submodule "src/abyss"]

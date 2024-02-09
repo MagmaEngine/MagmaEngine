@@ -26,41 +26,21 @@ message('Graphics Backend:', graphics)
 if get_option('math_double_precision').enabled()
   add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
 endif
+
+# Platinum Settings
 if get_option('debug_crash_on_error')
   add_project_arguments('-DPLATINUM_EXIT_CRASH', language : 'c')
 endif
 if get_option('debug_memory')
   add_project_arguments('-DPLATINUM_DEBUG_MEMORY', language : 'c')
 endif
-
-# Phantom Settings
-if graphics == 'vulkan'
-  add_project_arguments('-DPLATINUM_BACKEND_VULKAN', language : 'c')
-  add_project_arguments('-DABYSS_BACKEND_VULKAN', language : 'c')
-  dep_vulkan = dependency('vulkan', required : true)
-endif
 if get_option('debug_graphics')
   add_project_arguments('-DPLATINUM_DEBUG_GRAPHICS', language : 'c')
-endif
-# Phantom Display Settings
-if display == 'x11'
-  dep_display = dependency('xcb', required : true)
-  add_project_arguments('-DPLATINUM_DISPLAY_X11', language : 'c')
-elif display == 'wayland'
-  dep_display = dependency('wayland-client', required : true)
-  add_project_arguments('-DPLATINUM_DISPLAY_WAYLAND', language : 'c')
-elif display == 'win32'
-  add_project_arguments('-DPLATINUM_DISPLAY_WIN32', language : 'c')
-elif display == 'ncurses'
-  dep_display = dependency('ncurses', required : true)
-  add_project_arguments('-DPLATINUM_DISPLAY_NCURSES', language : 'c')
-else
-  error('There must be at least one graphical back-end installed.')
 endif
 
 subdir('src/enigma')
 subdir('src/platinum')
-subdir('src/abyss')
+#subdir('src/abyss')
 
 dark_srcs = [
   'src/main.c',
@@ -69,7 +49,7 @@ dark_srcs = [
   ]
 
 dark_deps = [
-  dep_libabyss,
+  #dep_libabyss,
   dep_libenigma,
   dep_libplatinum,
   dependency('iniparser', required : true),
