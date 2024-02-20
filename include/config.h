@@ -5,14 +5,14 @@
 
 enum config_section {
 	CONFIG_SECTION_ENGINE,
-	CONFIG_SECTION_PHANTOM,
+	CONFIG_SECTION_PLATINUM,
 	CONFIG_SECTION_MAX
 };
 
 typedef struct {
 	wchar_t *name;
 	wchar_t *version;
-	PAppConfig *config_phantom;
+	PAppConfig *config_platinum;
 } EngineConfig;
 
 typedef struct {
@@ -28,7 +28,7 @@ typedef struct {
 EngineConfig *engine_config_create(const char * const config_path);
 
 // Args
-void parse_args(EDynarr *engine_args, int argc, char **argv); // EDynarr contains EngineArg *
-void print_help(EDynarr *engine_args); // EDynarr contains EngineArg *
+void parse_args(PDynarr *engine_args, int argc, char **argv); // PDynarr contains EngineArg *
+void print_help(PDynarr *engine_args); // PDynarr contains EngineArg *
 
 #endif // _ENGINE_CONFIG_H

@@ -3,5 +3,5 @@ name = @PROJECTNAME@
 version = @PROJECTVERSION@
 
 
-[Phantom]
+[Platinum]
 shader_path = @SHADERPATH@

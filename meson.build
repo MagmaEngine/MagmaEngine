@@ -1,4 +1,4 @@
-project('DarkEngine', 'c',
+project('MagmaEngine', 'c',
   version : '0.0.1',
   default_options : [
     'buildtype=release',
@@ -22,12 +22,10 @@ graphics = meson.get_external_property('graphics')
 message('Display System:', display)
 message('Graphics Backend:', graphics)
 
-# Enigma Settings
-if get_option('math_double_precision').enabled()
-  add_project_arguments('-DENIGMA_DOUBLE_PRECISION', language : 'c')
-endif
-
 # Platinum Settings
+if get_option('math_double_precision').enabled()
+  add_project_arguments('-DPLATINUM_DOUBLE_PRECISION', language : 'c')
+endif
 if get_option('debug_crash_on_error')
   add_project_arguments('-DPLATINUM_EXIT_CRASH', language : 'c')
 endif
@@ -38,27 +36,27 @@ if get_option('debug_graphics')
   add_project_arguments('-DPLATINUM_DEBUG_GRAPHICS', language : 'c')
 endif
 
-subdir('src/enigma')
 subdir('src/platinum')
+#subdir('src/enigma')
 #subdir('src/abyss')
 
-dark_srcs = [
+magma_srcs = [
   'src/main.c',
   'src/config/config.c',
   'src/config/argparse.c',
   ]
 
-dark_deps = [
+magma_deps = [
   #dep_libabyss,
-  dep_libenigma,
+  #dep_libenigma,
   dep_libplatinum,
   dependency('iniparser', required : true),
   ]
 
-dark = executable(
-  'dark',
-  sources : dark_srcs,
-  dependencies : dark_deps,
+magma = executable(
+  'magma',
+  sources : magma_srcs,
+  dependencies : magma_deps,
   include_directories: include_directories('include'),
   win_subsystem : 'windows',
   install : true)
@@ -67,7 +65,7 @@ engine_conf = configuration_data()
 engine_conf.set('PROJECTNAME', meson.project_name())
 engine_conf.set('PROJECTVERSION', meson.project_version())
 engine_conf.set('SHADERPATH', join_paths(get_option('prefix'), platinum_shader_install_path))
-engine_conf_path = 'share/DarkEngine'
+engine_conf_path = 'share/MagmaEngine'
 engine_conf_name = 'config.ini'
 
 engine_config = configure_file(
@@ -80,9 +78,9 @@ engine_config = configure_file(
 
 runtime_conf = configuration_data()
 if get_option('b_sanitize') != 'none'
-  install_data('lsan_suppress.txt', install_dir: 'share/DarkEngine')
+  install_data('lsan_suppress.txt', install_dir: 'share/MagmaEngine')
   runtime_conf.set('RUNTIME_ENVVARS',
-    'LSAN_OPTIONS=fast_unwind_on_malloc=0\ suppressions=' + join_paths(get_option('prefix'), 'share/DarkEngine/lsan_suppress.txt '))
+    'LSAN_OPTIONS=fast_unwind_on_malloc=0\ suppressions=' + join_paths(get_option('prefix'), 'share/MagmaEngine/lsan_suppress.txt '))
 else
   runtime_conf.set('RUNTIME_ENVVARS', '')
 endif
@@ -92,7 +90,7 @@ endif
 # Create a custom script using configure_file
 run_script_config = configure_file(
   input : 'run.sh.in',
-  output : 'DarkEngine.sh',
+  output : 'MagmaEngine.sh',
   configuration : runtime_conf,
   install_mode : 'rwxr-xr-x',
   install_dir : 'bin',

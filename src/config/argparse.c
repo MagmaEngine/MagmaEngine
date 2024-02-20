@@ -7,21 +7,21 @@
  * automatically generates a help message
  * based on the engine_args and prints it
  */
-void print_help(EDynarr *engine_args)
+void print_help(PDynarr *engine_args)
 {
 	p_log_message(P_LOG_INFO, L"Args", L"USAGE: dark [OPTIONS]");
 	p_log_message(P_LOG_INFO, L"Args", L"Options:");
 	uint longest_flag_length = 0;
-	for (uint i = 0; i < engine_args->num_items; i++)
+	for (uint i = 0; i < p_dynarr_count(engine_args); i++)
 	{
-		EngineArg *arg = E_DYNARR_GET(engine_args, EngineArg *, i);
+		EngineArg *arg = p_dynarr_get(engine_args, EngineArg *, i);
 		if (strlen(arg->flag_long) > longest_flag_length)
 			longest_flag_length = strlen(arg->flag_long);
 	}
 
-	for (uint i = 0; i < engine_args->num_items; i++)
+	for (uint i = 0; i < p_dynarr_count(engine_args); i++)
 	{
-		EngineArg *arg = E_DYNARR_GET(engine_args, EngineArg *, i);
+		EngineArg *arg = p_dynarr_get(engine_args, EngineArg *, i);
 		p_log_message(P_LOG_INFO, L"Args", L"\t%-5s%-*s%s", arg->flag, longest_flag_length+2, arg->flag_long,
 				arg->description);
 	}
@@ -33,24 +33,24 @@ void print_help(EDynarr *engine_args)
  * parses the command line arguments
  * modifies the engine_args with the enabled flags
  */
-void parse_args(EDynarr *engine_args, int argc, char **argv)
+void parse_args(PDynarr *engine_args, int argc, char **argv)
 {
 	p_log_message(P_LOG_DEBUG, L"Args", L"parsing %d args", argc);
 	for (int i = 1; i < argc; i++)
 	{
 		p_log_message(P_LOG_DEBUG, L"Args", L"arg %d: %s", i, argv[i]);
 		bool found_flag = false;
-		for (uint j = 0; j < engine_args->num_items; j++)
+		for (uint j = 0; j < p_dynarr_count(engine_args); j++)
 		{
-			EngineArg *arg = E_DYNARR_GET(engine_args, EngineArg *, j);
+			EngineArg *arg = p_dynarr_get(engine_args, EngineArg *, j);
 			char *flag = arg->flag;
 			char *flag_long = arg->flag_long;
 			if (strncmp(argv[i], flag, strlen(argv[i])) == 0 || strncmp(argv[i], flag_long, strlen(argv[i])) == 0)
 			{
 				p_log_message(P_LOG_DEBUG, L"Args", L"found flag %s", arg->flag);
 				found_flag = true;
-				E_DYNARR_GET(engine_args, EngineArg *, j)->enabled = true;
-				if (E_DYNARR_GET(engine_args, EngineArg *, j)->value)
+				p_dynarr_get(engine_args, EngineArg *, j)->enabled = true;
+				if (p_dynarr_get(engine_args, EngineArg *, j)->value)
 				{
 					if (i+1 >= argc)
 					{
@@ -58,8 +58,8 @@ void parse_args(EDynarr *engine_args, int argc, char **argv)
 						print_help(engine_args);
 						exit(1);
 					}
-					E_DYNARR_GET(engine_args, EngineArg *, j)->value_str = argv[++i];
-					p_log_message(P_LOG_DEBUG, L"Args", L"found value %s", E_DYNARR_GET(engine_args, EngineArg *, j)
+					p_dynarr_get(engine_args, EngineArg *, j)->value_str = argv[++i];
+					p_log_message(P_LOG_DEBUG, L"Args", L"found value %s", p_dynarr_get(engine_args, EngineArg *, j)
 							->value_str);
 				}
 			}

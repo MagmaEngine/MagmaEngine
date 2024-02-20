@@ -1,6 +1,5 @@
 #include "config.h"
 #include "main.h"
-#include <enigma.h>
 #include <platinum.h>
 
 
@@ -73,7 +72,7 @@ static void window_request_destroy(PWindowRequest *window_request)
 int
 main (int argc, char *argv[])
 {
-	EDynarr *engine_args = e_dynarr_init(sizeof(EngineArg *), 1);
+	PDynarr *engine_args = p_dynarr_init(sizeof(EngineArg *), 1);
 
 	EngineArg arg_help = {
 			.flag = "-h",
@@ -91,8 +90,8 @@ main (int argc, char *argv[])
 			.value_str = NULL,
 			.enabled = false,
 	};
-	e_dynarr_add(engine_args, E_VOID_PTR_FROM_VALUE(EngineArg *, &arg_help));
-	e_dynarr_add(engine_args, E_VOID_PTR_FROM_VALUE(EngineArg *, &arg_config));
+	p_dynarr_add(engine_args, P_VPTR_CAST(EngineArg *, &arg_help));
+	p_dynarr_add(engine_args, P_VPTR_CAST(EngineArg *, &arg_config));
 
 	parse_args(engine_args, argc, argv);
 
@@ -104,7 +103,7 @@ main (int argc, char *argv[])
 
 	EngineConfig *config = engine_config_create(arg_config.value_str);
 
-	PAppRequest *app_request = app_request_create(config->config_phantom);
+	PAppRequest *app_request = app_request_create(config->config_platinum);
 	PAppData *app_data = p_app_init(*app_request);
 	app_request_destroy(app_request);
 
@@ -133,7 +132,7 @@ main (int argc, char *argv[])
 	//		E_DYNARR_GET(app_data->window_settings, PWindowSettings *, 0)->display_type);
 
 	// MAIN LOOP
-	while(app_data->window_data->num_items)
+	while(p_dynarr_count(app_data->window_data))
 		p_sleep_ms(10);
 
 	p_app_deinit(app_data);

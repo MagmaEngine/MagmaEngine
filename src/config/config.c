@@ -15,8 +15,8 @@ EngineConfig *engine_config_create(const char * const config_path)
 		p_log_message(P_LOG_DEBUG, L"Config", L"No config file specified, using defaults");
 		config->name = L"DarkEngine";
 		config->version = L"1.0.0";
-		config->config_phantom = malloc(sizeof *config);
-		config->config_phantom->shader_path = "build/src/phantom/shaders/";
+		config->config_platinum = malloc(sizeof *config);
+		config->config_platinum->shader_path = "build/src/platinum/shaders/";
 		return config;
 	} else if (p_file_exists(config_path) == false) {
 		p_log_message(P_LOG_ERROR, L"Config", L"Config file not found");
@@ -40,16 +40,16 @@ EngineConfig *engine_config_create(const char * const config_path)
 		mbstowcs(engine_version, iniparser_getstring(config_data, "Engine:version", NULL), max_string_len);
 		p_log_message(P_LOG_DEBUG, L"Config", L"Engine version: %ls", engine_version);
 
-		char *phantom_shader_path = malloc(max_string_len * sizeof(char));
-		strncpy(phantom_shader_path, iniparser_getstring(config_data, "Phantom:shader_path", NULL), max_string_len);
-		p_log_message(P_LOG_DEBUG, L"Config", L"Phantom shader path: %s", phantom_shader_path);
+		char *platinum_shader_path = malloc(max_string_len * sizeof(char));
+		strncpy(platinum_shader_path, iniparser_getstring(config_data, "Platinum:shader_path", NULL), max_string_len);
+		p_log_message(P_LOG_DEBUG, L"Config", L"Platinum shader path: %s", platinum_shader_path);
 
 		iniparser_freedict(config_data);
 
 		config->name = engine_name;
 		config->version = engine_version;
-		config->config_phantom = malloc(sizeof *config);
-		config->config_phantom->shader_path = phantom_shader_path;
+		config->config_platinum = malloc(sizeof *config);
+		config->config_platinum->shader_path = platinum_shader_path;
 		return config;
 	}
 }

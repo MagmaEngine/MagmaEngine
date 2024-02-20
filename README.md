@@ -1,4 +1,4 @@
-# Dark Engine
+# MagmaEngine
 Game Engine
 
 # Compiling for debugging on Linux
@@ -6,7 +6,7 @@ Game Engine
 meson setup build --native-file linux_x11_native.ini
 meson configure build --buildtype=debug -Ddebug_memory=true -Ddebug_vulkan=true -Db_sanitize=address -Db_lundef=false
 meson compile -C build
-build/DarkEngine.sh
+build/MagmaEngine.sh
 meson install -C build
 
 TODO:
@@ -16,7 +16,7 @@ TODO:
  - Capture input
  - GUI widgets
 
-## Phantom (Graphics library)
+## Platinum (Platform Abstraction Layer)
 
 TODO:
  - X11 Window creation framework
@@ -36,7 +36,7 @@ Support for
 ## Enigma (Utilities)
 
 Names
-DarkEngine
+MagmaEngine
 ChaosMatrix
 ShadowBlade
 EclipseRender
