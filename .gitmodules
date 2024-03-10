@@ -1,15 +1,15 @@
 [submodule "src/enigma"]
 	path = src/enigma
-	url = git@deltafortress.hopto.me:DarkEngine/enigma.git
+	url = git@deltafortress.hopto.me:MagmaEngine/enigma.git
 	branch = main
 	ignore = all
 [submodule "src/platinum"]
 	path = src/platinum
-	url = git@deltafortress.hopto.me:DarkEngine/platinum.git
+	url = git@deltafortress.hopto.me:MagmaEngine/platinum.git
 	branch = main
 	ignore = all
 [submodule "src/abyss"]
 	path = src/abyss
-	url = git@deltafortress.hopto.me:DarkEngine/abyss.git
+	url = git@deltafortress.hopto.me:MagmaEngine/abyss.git
 	branch = main
 	ignore = all
