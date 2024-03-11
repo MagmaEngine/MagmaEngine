@@ -1,5 +1,6 @@
 const std = @import("std");
 
+/// MessageHandler handles messages between modules.
 pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type {
     std.debug.assert(@typeInfo(TopicEnum) == .Enum);
     return struct {
@@ -16,6 +17,7 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
         handlerCount: usize = 0,
         ready: bool = false,
 
+        /// Initialize the message handler
         pub fn init(allocator: std.mem.Allocator) Self {
             const self = Self{
                 .handlerLists = [_]HandlerList{HandlerList.init(allocator)} ** TopicCount,
@@ -23,7 +25,7 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
             return self;
         }
 
-        // Define a function to send a message
+        /// Send a message
         pub fn send(self: *Self, topic: TopicEnum, message: MessageType) void {
             const handlerList = self.handlerLists[@intFromEnum(topic)];
             for (handlerList.items) |handlerData| {
@@ -31,6 +33,8 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
             }
         }
 
+        /// Register a message handler to one or more topics
+        /// Assumes the handler has not been registered
         pub fn registerMessageHandler(self: *Self, topics: []const TopicEnum, handler: Handler) usize {
             for (topics) |topic| {
                 const handlerData = HandlerData{
@@ -43,12 +47,15 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
             return self.handlerCount - 1;
         }
 
+        /// Remove a message handler from all topics
+        /// Assumes the handler has been registered only once
         pub fn removeMessageHandler(self: *Self, id: usize) Handler {
             var handler: Handler = undefined;
             for (&self.handlerLists) |*handlerList| {
                 for (handlerList.items, 0..) |*handlerData, i| {
                     if (handlerData.id == id) {
                         handler = handlerList.swapRemove(i).handler;
+                        break;
                     }
                 }
             }
@@ -58,22 +65,20 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
     };
 }
 
-// tests the message handler
 test "message handler" {
-    // Additional message handlers
     const TestFunctions = struct {
         const Self = @This();
-        var val: i32 = 0;
+        var val: u32 = 0;
 
-        pub fn handleMessage1(message: i32) void {
+        pub fn handleMessage1(message: u32) void {
             Self.val += message * 1;
         }
 
-        pub fn handleMessage2(message: i32) void {
+        pub fn handleMessage2(message: u32) void {
             Self.val += message * 2;
         }
 
-        pub fn handleMessage3(message: i32) void {
+        pub fn handleMessage3(message: u32) void {
             Self.val += message * 3;
         }
     };
@@ -84,13 +89,11 @@ test "message handler" {
     };
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 
-    var messageHandler = MessageHandler(Topics, i32).init(gpa.allocator());
+    var messageHandler = MessageHandler(Topics, u32).init(gpa.allocator());
 
-    // Register multiple message handlers
     _ = messageHandler.registerMessageHandler(&[1]Topics{Topics.topic1}, TestFunctions.handleMessage1);
     const id2 = messageHandler.registerMessageHandler(&[2]Topics{ Topics.topic2, Topics.topic3 }, TestFunctions.handleMessage2);
 
-    // Send the message
     messageHandler.send(Topics.topic1, 1);
     try std.testing.expect(TestFunctions.val == 1);
     messageHandler.send(Topics.topic2, 2);
