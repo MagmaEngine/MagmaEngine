@@ -1,7 +1,0 @@
-[Engine]
-name = @PROJECTNAME@
-version = @PROJECTVERSION@
-
-
-[Platinum]
-shader_path = @SHADERPATH@
