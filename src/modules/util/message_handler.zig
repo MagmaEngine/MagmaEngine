@@ -13,23 +13,23 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
         const HandlerList = std.ArrayList(HandlerData);
         const TopicCount = @typeInfo(TopicEnum).Enum.fields.len;
 
-        handlerLists: [TopicCount]HandlerList,
-        handlerCount: usize = 0,
+        handler_lists: [TopicCount]HandlerList,
+        handler_count: usize = 0,
         ready: bool = false,
 
         /// Initialize the message handler
         pub fn init(allocator: std.mem.Allocator) Self {
             const self = Self{
-                .handlerLists = [_]HandlerList{HandlerList.init(allocator)} ** TopicCount,
+                .handler_lists = [_]HandlerList{HandlerList.init(allocator)} ** TopicCount,
             };
             return self;
         }
 
         /// Send a message
         pub fn send(self: *Self, topic: TopicEnum, message: MessageType) void {
-            const handlerList = self.handlerLists[@intFromEnum(topic)];
-            for (handlerList.items) |handlerData| {
-                handlerData.handler(message);
+            const handler_list = self.handler_lists[@intFromEnum(topic)];
+            for (handler_list.items) |handler_data| {
+                handler_data.handler(message);
             }
         }
 
@@ -37,29 +37,29 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
         /// Assumes the handler has not been registered
         pub fn registerMessageHandler(self: *Self, topics: []const TopicEnum, handler: Handler) usize {
             for (topics) |topic| {
-                const handlerData = HandlerData{
+                const handler_data = HandlerData{
                     .handler = handler,
-                    .id = self.handlerCount,
+                    .id = self.handler_count,
                 };
-                self.handlerLists[@intFromEnum(topic)].append(handlerData) catch unreachable;
+                self.handler_lists[@intFromEnum(topic)].append(handler_data) catch unreachable;
             }
-            self.handlerCount += 1;
-            return self.handlerCount - 1;
+            self.handler_count += 1;
+            return self.handler_count - 1;
         }
 
         /// Remove a message handler from all topics
         /// Assumes the handler has been registered only once
         pub fn removeMessageHandler(self: *Self, id: usize) Handler {
             var handler: Handler = undefined;
-            for (&self.handlerLists) |*handlerList| {
-                for (handlerList.items, 0..) |*handlerData, i| {
-                    if (handlerData.id == id) {
-                        handler = handlerList.swapRemove(i).handler;
+            for (&self.handler_lists) |*handler_list| {
+                for (handler_list.items, 0..) |*handler_data, i| {
+                    if (handler_data.id == id) {
+                        handler = handler_list.swapRemove(i).handler;
                         break;
                     }
                 }
             }
-            self.handlerCount -= 1;
+            self.handler_count -= 1;
             return handler;
         }
     };
