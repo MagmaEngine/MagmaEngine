@@ -66,15 +66,15 @@ test "message handler" {
         var val: i32 = 0;
 
         pub fn handleMessage1(message: i32) void {
-            Self.val = message * 1;
+            Self.val += message * 1;
         }
 
         pub fn handleMessage2(message: i32) void {
-            Self.val = message * 2;
+            Self.val += message * 2;
         }
 
         pub fn handleMessage3(message: i32) void {
-            Self.val = message * 3;
+            Self.val += message * 3;
         }
     };
     const Topics = enum(u2) {
@@ -94,12 +94,12 @@ test "message handler" {
     messageHandler.send(Topics.topic1, 1);
     try std.testing.expect(TestFunctions.val == 1);
     messageHandler.send(Topics.topic2, 2);
-    try std.testing.expect(TestFunctions.val == 4);
+    try std.testing.expect(TestFunctions.val == 5);
 
     _ = messageHandler.removeMessageHandler(id2);
     _ = messageHandler.registerMessageHandler(&[1]Topics{Topics.topic3}, TestFunctions.handleMessage3);
     messageHandler.send(Topics.topic2, 3);
-    try std.testing.expect(TestFunctions.val == 4);
+    try std.testing.expect(TestFunctions.val == 5);
     messageHandler.send(Topics.topic3, 4);
-    try std.testing.expect(TestFunctions.val == 12);
+    try std.testing.expect(TestFunctions.val == 17);
 }

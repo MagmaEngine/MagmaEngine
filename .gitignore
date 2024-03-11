@@ -1,5 +1,7 @@
 .cache/
 build/
+zig-cache/
+zig-out/
 
 # compiled shaders
 *.spv
