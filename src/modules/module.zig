@@ -1,4 +1,5 @@
 const std = @import("std");
+const logger = @import("../util/logger.zig");
 
 pub fn Module(comptime T: type) type {
     return struct {
@@ -10,21 +11,21 @@ pub fn Module(comptime T: type) type {
         ready: bool = false,
 
         pub fn init() Self {
+            logger.log(.DEBUG, @typeName(T), "Initializing module\n", .{});
             const module = .{
                 .module = ModuleType.init() catch |err| {
-                    std.debug.print("ERROR: {s}, unable to initialize module: {s}\n", .{ @errorName(err), @typeName(T) });
+                    logger.log(.ERROR, @typeName(T), "Unable to initialize module: {s}\n", .{@errorName(err)});
                     return .{
                         .module = undefined,
                         .enabled = false,
                     };
-                    // log unable to initialize module
-                    // don't enable module
                 },
             };
             return module;
         }
 
         pub fn deinit(self: *Self) void {
+            logger.log(.DEBUG, @typeName(T), "Deinitializing module\n", .{});
             self.module.deinit();
             self.ready = false;
         }

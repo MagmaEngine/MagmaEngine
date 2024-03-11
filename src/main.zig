@@ -1,6 +1,6 @@
-const std = @import("std");
 const module = @import("modules/module.zig");
 const window = @import("modules/window/window.zig");
+const logger = @import("util/logger.zig");
 
 pub fn main() void {
 

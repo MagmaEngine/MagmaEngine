@@ -1,6 +1,6 @@
 const std = @import("std");
 const builtin = @import("builtin");
-const MessageHandler = @import("../util/message_handler.zig").MessageHandler;
+const MessageHandler = @import("../../util/message_handler.zig").MessageHandler;
 
 pub const WindowSystem = struct {
     const DisplayError = error{

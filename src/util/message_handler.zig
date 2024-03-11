@@ -15,7 +15,6 @@ pub fn MessageHandler(comptime TopicEnum: type, comptime MessageType: type) type
 
         handler_lists: [TopicCount]HandlerList,
         handler_count: usize = 0,
-        ready: bool = false,
 
         /// Initialize the message handler
         pub fn init(allocator: std.mem.Allocator) Self {
