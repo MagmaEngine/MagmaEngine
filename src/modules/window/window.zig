@@ -1,27 +1,40 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const MessageHandler = @import("../util/message_handler.zig").MessageHandler;
 
-const WindowRequestEnum = enum {
-    CREATE,
-    CLOSE,
-    FULLSCREEN,
-    WINDOWED,
-    SET_DIMENSIONS,
-    SET_TITLE,
-    SET_ICON,
-};
-
 pub const WindowSystem = struct {
-    const WindowMessageHandler = MessageHandler(WindowRequestEnum, void);
+    const DisplayError = error{
+        XDGSessionTypeEnvarNotSet,
+        DisplayEnvarNotSet,
+        UnsupportedDisplayType,
+    };
+    const RequestEnum = enum {
+        CREATE,
+        CLOSE,
+        FULLSCREEN,
+        WINDOWED,
+        SET_DIMENSIONS,
+        SET_TITLE,
+        SET_ICON,
+    };
+    const DisplayEnum = enum {
+        WAYLAND,
+        X11,
+        WIN32,
+    };
 
-    message_handler: WindowMessageHandler,
+    const WindowMessageHandler = MessageHandler(RequestEnum, void);
+
     allocator: std.mem.Allocator,
+    message_handler: WindowMessageHandler,
+    display_type: DisplayEnum,
 
-    pub fn init() WindowSystem {
+    pub fn init() !WindowSystem {
         var allocator = std.heap.GeneralPurposeAllocator(.{}){};
         return .{
             .allocator = allocator.allocator(),
             .message_handler = WindowMessageHandler.init(allocator.allocator()),
+            .display_type = try detectDisplayType(),
         };
     }
     pub fn deinit(self: *WindowSystem) void {
@@ -48,5 +61,27 @@ pub const WindowSystem = struct {
     }
     pub fn setIcon(self: *WindowSystem) void {
         _ = self;
+    }
+
+    fn detectDisplayType() !DisplayEnum {
+        return switch (builtin.os.tag) {
+            .linux => {
+                if (std.os.getenv("XDG_SESSION_TYPE") == null) {
+                    return DisplayError.XDGSessionTypeEnvarNotSet;
+                } else if (std.os.getenv("WAYLAND_DISPLAY") != null) {
+                    return .WAYLAND;
+                } else if (std.os.getenv("DISPLAY") != null) {
+                    return .X11;
+                } else {
+                    return DisplayError.DisplayEnvarNotSet;
+                }
+            },
+            .windows => {
+                return .WIN32;
+            },
+            else => {
+                return DisplayError.UnsupportedDisplayType;
+            },
+        };
     }
 };
