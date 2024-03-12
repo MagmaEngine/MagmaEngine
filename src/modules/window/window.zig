@@ -1,13 +1,15 @@
 const std = @import("std");
-const builtin = @import("builtin");
+const platform = @import("platform.zig");
 const MessageHandler = @import("../../util/message_handler.zig").MessageHandler;
 
 pub const WindowSystem = struct {
-    const DisplayError = error{
-        XDGSessionTypeEnvarNotSet,
-        DisplayEnvarNotSet,
-        UnsupportedDisplayType,
-    };
+    const Self = @This();
+
+    // TODO: fix vulkan stuff here later
+    const VoidFunction = fn () void;
+    const PFN_VkGetInstanceProcAddr = fn (instance: anytype, procname: ?[]const u8) VoidFunction;
+
+    const DisplayError = error{};
     const RequestEnum = enum {
         CREATE,
         CLOSE,
@@ -17,71 +19,47 @@ pub const WindowSystem = struct {
         SET_TITLE,
         SET_ICON,
     };
-    const DisplayEnum = enum {
-        WAYLAND,
-        X11,
-        WIN32,
+    const WindowSystemHints = struct {
+        init: InitHints,
+    };
+    const InitHints = struct {
+        hat_buttons: bool = true,
+        angle_type: platform.AnglePlatformTypeEnum = .ANGLE_PLATFORM_NONE,
+        platform_id: platform.PlatformEnum = .ANY,
+        vulkan_loader: ?PFN_VkGetInstanceProcAddr = null,
+        ns: struct {
+            menubar: bool = true,
+            chdir: bool = true,
+        },
+        x11: struct {
+            xcbVulkanSurface: bool = true,
+        },
+        wl: struct {
+            libdecorMode: platform.WAYLAND_PREFER_LIBDECOR = .WAYLAND_PREFER_LIBDECOR,
+        },
     };
 
     const WindowMessageHandler = MessageHandler(RequestEnum, void);
 
     allocator: std.mem.Allocator,
     message_handler: WindowMessageHandler,
-    display_type: DisplayEnum,
+    hints: WindowSystemHints,
+    platform: platform.PlatformEnum,
+    // TODO: Add an array of windows
 
+    // TODO: need to pass in hints and an allocator
     pub fn init() !WindowSystem {
         var allocator = std.heap.GeneralPurposeAllocator(.{}){};
-        return .{
+        var window_system = WindowSystem{
             .allocator = allocator.allocator(),
             .message_handler = WindowMessageHandler.init(allocator.allocator()),
-            .display_type = try detectDisplayType(),
+            .hints = .{},
+            .platform = undefined,
         };
+        window_system.platform = platform.selectPlatform(window_system.hints.init.platform_id);
+        return window_system;
     }
     pub fn deinit(self: *WindowSystem) void {
         _ = self;
-    }
-
-    pub fn create(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn close(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn fullscreen(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn windowed(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn setDimensions(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn setTitle(self: *WindowSystem) void {
-        _ = self;
-    }
-    pub fn setIcon(self: *WindowSystem) void {
-        _ = self;
-    }
-
-    fn detectDisplayType() !DisplayEnum {
-        return switch (builtin.os.tag) {
-            .linux => {
-                if (std.os.getenv("XDG_SESSION_TYPE") == null) {
-                    return DisplayError.XDGSessionTypeEnvarNotSet;
-                } else if (std.os.getenv("WAYLAND_DISPLAY") != null) {
-                    return .WAYLAND;
-                } else if (std.os.getenv("DISPLAY") != null) {
-                    return .X11;
-                } else {
-                    return DisplayError.DisplayEnvarNotSet;
-                }
-            },
-            .windows => {
-                return .WIN32;
-            },
-            else => {
-                return DisplayError.UnsupportedDisplayType;
-            },
-        };
     }
 };
