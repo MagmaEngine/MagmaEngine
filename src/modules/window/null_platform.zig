@@ -1,13 +1,14 @@
-const window_system = @import("window_system.zig");
-const Platform = window_system.Platform;
-const PlatformError = window_system.PlatformError;
+const std = @import("std");
+const WindowSystem = @import("window_system.zig").WindowSystem;
+const Platform = WindowSystem.Platform;
 
 const MonitorState = struct {
-    ramp: window_system.GammaRamp,
+    ramp: WindowSystem.GammaRamp,
 };
 
-pub fn setup() PlatformError!Platform {
+pub fn setup() Platform {
     return Platform{
+        .id = WindowSystem.PlatformEnum.NULL,
         .init = init,
         .terminate = terminate,
 
@@ -62,21 +63,35 @@ pub fn setup() PlatformError!Platform {
     };
 }
 
-pub fn init(winsys: *window_system.WindowSystem) void {
-    poll_monitors(winsys);
+pub fn init(winsys: *WindowSystem) std.mem.Allocator.Error!void {
+    try poll_monitors(winsys);
 }
 
-pub fn terminate(winsys: *window_system.WindowSystem) void {
+pub fn terminate(winsys: *WindowSystem) void {
     _ = winsys;
 }
 
-fn poll_monitors(winsys: *window_system.WindowSystem) !void {
+fn poll_monitors(winsys: *WindowSystem) std.mem.Allocator.Error!void {
     const dpi: f32 = 141;
-    const mode: window_system.VideoMode = winsys.platform.get_video_mode();
-    const null_monitor: window_system.Monitor = .{
+    const mode: WindowSystem.VideoMode = winsys.platform.get_video_mode();
+    const null_monitor: WindowSystem.Monitor = .{
         .name = "Null SuperNoop 0",
-        .widthMM = mode.width * 25.4 / dpi,
-        .heightMM = mode.height * 25.4 / dpi,
+        .widthMM = @as(f32, @floatFromInt(mode.width)) * 25.4 / dpi,
+        .heightMM = @as(f32, @floatFromInt(mode.height)) * 25.4 / dpi,
+        .modes = &[1]WindowSystem.VideoMode{mode},
+        .current_mode = 0,
+        .original_ramp = .{
+            .red = &[0]u16{},
+            .green = &[0]u16{},
+            .blue = &[0]u16{},
+            .size = 0,
+        },
+        .current_ramp = .{
+            .red = &[0]u16{},
+            .green = &[0]u16{},
+            .blue = &[0]u16{},
+            .size = 0,
+        },
     };
     winsys.monitors.clearRetainingCapacity();
     try winsys.monitors.append(null_monitor);
@@ -102,8 +117,8 @@ pub fn get_video_modes() void {
     return;
 }
 
-pub fn get_video_mode() void {
-    return window_system.VideoMode{
+pub fn get_video_mode() WindowSystem.VideoMode {
+    return WindowSystem.VideoMode{
         .width = 1920,
         .height = 1080,
         .redBits = 8,

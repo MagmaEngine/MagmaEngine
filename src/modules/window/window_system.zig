@@ -1,14 +1,15 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const null_platform = @import("null_platform.zig");
+//const x11_platform = @import("x11_platform.zig");
 const MessageHandler = @import("../../util/message_handler.zig").MessageHandler;
 
 pub const WindowSystem = struct {
     const Self = @This();
 
     // TODO: fix vulkan stuff here later
-    const VoidFunction = fn () void;
-    const PFN_VkGetInstanceProcAddr = fn (instance: anytype, procname: ?[]const u8) VoidFunction;
+    //const VoidFunction = fn () void;
+    //const PFN_VkGetInstanceProcAddr = fn (instance: anytype, procname: ?[]const u8) VoidFunction;
 
     const DisplayError = error{};
     const RequestEnum = enum {
@@ -21,69 +22,68 @@ pub const WindowSystem = struct {
         SET_ICON,
     };
 
-    const PlatformEnum = enum {
-        ANY,
+    pub const PlatformEnum = enum {
         WIN32,
         COCOA,
         WAYLAND,
         X11,
         NULL,
     };
-    const Platform = struct {
+    pub const Platform = struct {
         id: PlatformEnum,
 
         // init
-        init: fn (Self) void,
-        terminate: fn (Self) void,
+        init: *const fn (*Self) std.mem.Allocator.Error!void,
+        terminate: *const fn (*Self) void,
 
         // monitor
-        free_monitor: fn () void,
-        get_monitor_pos: fn () void,
-        get_monitor_content_scale: fn () void,
-        get_monitor_workarea: fn () void,
-        get_video_modes: fn () void,
-        get_video_mode: fn () void,
-        get_gamma_ramp: fn () void,
-        set_gamma_ramp: fn () void,
+        free_monitor: *const fn () void,
+        get_monitor_pos: *const fn () void,
+        get_monitor_content_scale: *const fn () void,
+        get_monitor_workarea: *const fn () void,
+        get_video_modes: *const fn () void,
+        get_video_mode: *const fn () VideoMode,
+        get_gamma_ramp: *const fn () void,
+        set_gamma_ramp: *const fn () void,
 
         // window
-        create_window: fn () void,
-        destroy_window: fn () void,
-        set_window_title: fn () void,
-        set_window_icon: fn () void,
-        get_window_pos: fn () void,
-        set_window_pos: fn () void,
-        get_window_size: fn () void,
-        set_window_size: fn () void,
-        set_window_size_limits: fn () void,
-        set_window_aspect_ratio: fn () void,
-        get_framebuffer_size: fn () void,
-        get_window_frame_size: fn () void,
-        get_window_content_scale: fn () void,
-        iconify_window: fn () void,
-        restore_window: fn () void,
-        maximize_window: fn () void,
-        show_window: fn () void,
-        hide_window: fn () void,
-        request_window_attention: fn () void,
-        focus_window: fn () void,
-        set_window_monitor: fn () void,
-        window_focused: fn () void,
-        window_iconified: fn () void,
-        window_visible: fn () void,
-        window_maximized: fn () void,
-        window_hovered: fn () void,
-        framebuffer_transparent: fn () void,
-        get_window_opacity: fn () void,
-        set_window_resizable: fn () void,
-        set_window_decorated: fn () void,
-        set_window_floating: fn () void,
-        set_window_opacity: fn () void,
-        set_window_mouse_passthrough: fn () void,
-        poll_events: fn () void,
-        wait_events: fn () void,
-        wait_events_timeout: fn () void,
-        post_empty_event: fn () void,
+        create_window: *const fn () void,
+        destroy_window: *const fn () void,
+        set_window_title: *const fn () void,
+        set_window_icon: *const fn () void,
+        get_window_pos: *const fn () void,
+        set_window_pos: *const fn () void,
+        get_window_size: *const fn () void,
+        set_window_size: *const fn () void,
+        set_window_size_limits: *const fn () void,
+        set_window_aspect_ratio: *const fn () void,
+        get_framebuffer_size: *const fn () void,
+        get_window_frame_size: *const fn () void,
+        get_window_content_scale: *const fn () void,
+        iconify_window: *const fn () void,
+        restore_window: *const fn () void,
+        maximize_window: *const fn () void,
+        show_window: *const fn () void,
+        hide_window: *const fn () void,
+        request_window_attention: *const fn () void,
+        focus_window: *const fn () void,
+        set_window_monitor: *const fn () void,
+        window_focused: *const fn () void,
+        window_iconified: *const fn () void,
+        window_visible: *const fn () void,
+        window_maximized: *const fn () void,
+        window_hovered: *const fn () void,
+        framebuffer_transparent: *const fn () void,
+        get_window_opacity: *const fn () void,
+        set_window_resizable: *const fn () void,
+        set_window_decorated: *const fn () void,
+        set_window_floating: *const fn () void,
+        set_window_opacity: *const fn () void,
+        set_window_mouse_passthrough: *const fn () void,
+        poll_events: *const fn () void,
+        wait_events: *const fn () void,
+        wait_events_timeout: *const fn () void,
+        post_empty_event: *const fn () void,
 
         //// EGL
         //get_EGL_platform: fn () void,
@@ -101,7 +101,7 @@ pub const WindowSystem = struct {
         UnsupportedPlatform,
         UndesiredPlatform,
     };
-    const VideoMode = struct {
+    pub const VideoMode = struct {
         /// The width, in screen coordinates, of the video mode.
         width: u32,
         /// The height, in screen coordinates, of the video mode.
@@ -123,11 +123,11 @@ pub const WindowSystem = struct {
         size: usize,
     };
 
-    const Monitor = struct {
-        name: []u8,
-        user_pointer: ?*anyopaque,
-        widthMM: u32,
-        heightMM: u32,
+    pub const Monitor = struct {
+        name: []const u8,
+        //user_pointer: ?*anyopaque,
+        widthMM: f32,
+        heightMM: f32,
         //window: window.Window, // The window whose video mode is current on this monitor
         modes: []const VideoMode,
         current_mode: usize,
@@ -142,8 +142,7 @@ pub const WindowSystem = struct {
     };
     const InitHints = struct {
         hat_buttons: bool = true,
-        platform_id: PlatformEnum = .ANY,
-        vulkan_loader: ?PFN_VkGetInstanceProcAddr = null,
+        //vulkan_loader: ?PFN_VkGetInstanceProcAddr = null,
         ns: struct {
             menubar: bool = true,
             chdir: bool = true,
@@ -181,7 +180,7 @@ pub const WindowSystem = struct {
             },
             .platform = undefined,
         };
-        window_system.platform = try setup_platform(window_system.hints.init.platform_id);
+        window_system.platform = try setup_platform();
         return window_system;
     }
 
@@ -189,39 +188,25 @@ pub const WindowSystem = struct {
         _ = self;
     }
 
-    fn setup_platform(desired_platform: PlatformEnum) PlatformError!Platform {
-        const target = switch (builtin.os.tag) {
-            .linux, .freebsd, .netbsd, .openbsd, .dragonfly, .solaris => {
-                if (std.os.getenv("XDG_SESSION_TYPE") == null) {
-                    return PlatformError.XDGSessionTypeEnvarNotSet;
-                } else if (std.os.getenv("WAYLAND_DISPLAY") != null) {
-                    .WAYLAND;
-                } else if (std.os.getenv("DISPLAY") != null) {
-                    .X11;
-                } else {
-                    return PlatformError.DisplayEnvarNotSet;
-                }
-            },
-            .windows => .WIN32,
-            .macos, .ios => .COCOA,
+    fn setup_platform() PlatformError!Platform {
+        return switch (builtin.os.tag) {
+            .linux, .freebsd, .netbsd, .openbsd, .dragonfly, .solaris => if (std.os.getenv("XDG_SESSION_TYPE") == null)
+                return PlatformError.XDGSessionTypeEnvarNotSet
+            else if (std.os.getenv("WAYLAND_DISPLAY") != null)
+                //wayland_platform.setup()
+                null_platform.setup()
+            else if (std.os.getenv("DISPLAY") != null)
+                //x11_platform.setup()
+                null_platform.setup()
+            else
+                PlatformError.DisplayEnvarNotSet,
+            //.windows => win32_platform.setup(),
+            //.macos, .ios => cocoa_platform.setup(),
+            .windows => null_platform.setup(),
+            .macos, .ios => null_platform.setup(),
             else => {
                 return PlatformError.UnsupportedPlatform;
             },
-        };
-
-        switch (desired_platform) {
-            .ANY => {},
-            .NULL => target = .NULL,
-            else => if (target != desired_platform) PlatformError.UndesiredPlatform,
-        }
-
-        return switch (target) {
-            .NULL => null_platform.setup(),
-            //.WIN32 => win32_platform.setup(),
-            //.COCOA => cocoa_platform.setup(),
-            //.WAYLAND => wayland_platform.setup(),
-            //.X11 => x11_platform.setup(),
-            else => PlatformError.UnsupportedPlatform,
         };
     }
 };

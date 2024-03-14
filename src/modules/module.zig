@@ -13,7 +13,7 @@ pub fn Module(comptime T: type, comptime name: []const u8) type {
             log(.DEBUG, "Initializing module\n", .{});
             const module = .{
                 .module = ModuleType.init() catch |err| {
-                    log(.ERROR, name, "Unable to initialize module: {s}\n", .{@errorName(err)});
+                    log(.ERROR, "Unable to initialize module: {s}\n", .{@errorName(err)});
                     return .{
                         .module = undefined,
                         .enabled = false,
@@ -24,7 +24,7 @@ pub fn Module(comptime T: type, comptime name: []const u8) type {
         }
 
         pub fn deinit(self: *Self) void {
-            log(.DEBUG, @typeName(T), "Deinitializing module\n", .{});
+            log(.DEBUG, "Deinitializing module\n", .{});
             self.module.deinit();
             self.ready = false;
         }
@@ -36,7 +36,7 @@ pub fn Module(comptime T: type, comptime name: []const u8) type {
             ERROR,
         };
 
-        pub fn log(level: LogLevelEnum, comptime fmt: []const u8, args: anytype) void {
+        pub fn log(comptime level: LogLevelEnum, comptime fmt: []const u8, args: anytype) void {
             const color = switch (level) {
                 .DEBUG => "\x1b[34m",
                 .INFO => "\x1b[32m",
@@ -57,8 +57,7 @@ pub fn Module(comptime T: type, comptime name: []const u8) type {
                     var out_bw = std.io.bufferedWriter(stdout_file);
                     const stdout = out_bw.writer();
                     stdout.print(log_message, args) catch return;
-                    //out_bw.flush() catch return;
-
+                    out_bw.flush() catch return;
                 },
             }
         }
