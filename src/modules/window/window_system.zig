@@ -1,7 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const null_platform = @import("null_platform.zig");
-//const x11_platform = @import("x11_platform.zig");
+const wayland_platform = @import("wayland_platform.zig");
 const MessageHandler = @import("../../util/message_handler.zig").MessageHandler;
 
 pub const WindowSystem = struct {
@@ -193,8 +193,7 @@ pub const WindowSystem = struct {
             .linux, .freebsd, .netbsd, .openbsd, .dragonfly, .solaris => if (std.os.getenv("XDG_SESSION_TYPE") == null)
                 return PlatformError.XDGSessionTypeEnvarNotSet
             else if (std.os.getenv("WAYLAND_DISPLAY") != null)
-                //wayland_platform.setup()
-                null_platform.setup()
+                wayland_platform.setup()
             else if (std.os.getenv("DISPLAY") != null)
                 //x11_platform.setup()
                 null_platform.setup()
