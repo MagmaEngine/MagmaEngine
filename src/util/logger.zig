@@ -7,7 +7,7 @@ const LogLevelEnum = enum {
     ERROR,
 };
 
-pub fn log(comptime level: LogLevelEnum, comptime channel: []const u8, comptime fmt: []const u8, args: anytype) void {
+pub fn log(level: LogLevelEnum, channel: []const u8, comptime fmt: []const u8, args: anytype) void {
     const color = switch (level) {
         .DEBUG => "\x1b[34m",
         .INFO => "\x1b[32m",

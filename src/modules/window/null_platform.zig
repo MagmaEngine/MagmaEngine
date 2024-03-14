@@ -1,124 +1,270 @@
-const ScancodeEnum = enum(u7) {
-    FIRST = ScancodeEnum.Space,
-    SPACE = 1,
-    APOSTROPHE = 2,
-    COMMA = 3,
-    MINUS = 4,
-    PERIOD = 5,
-    SLASH = 6,
-    @"0" = 7,
-    @"1" = 8,
-    @"2" = 9,
-    @"3" = 10,
-    @"4" = 11,
-    @"5" = 12,
-    @"6" = 13,
-    @"7" = 14,
-    @"8" = 15,
-    @"9" = 16,
-    SEMICOLON = 17,
-    EQUAL = 18,
-    LEFT_BRACKET = 19,
-    BACKSLASH = 20,
-    RIGHT_BRACKET = 21,
-    GRAVE_ACCENT = 22,
-    WORLD_1 = 23,
-    WORLD_2 = 24,
-    ESCAPE = 25,
-    ENTER = 26,
-    TAB = 27,
-    BACKSPACE = 28,
-    INSERT = 29,
-    DELETE = 30,
-    RIGHT = 31,
-    LEFT = 32,
-    DOWN = 33,
-    UP = 34,
-    PAGE_UP = 35,
-    PAGE_DOWN = 36,
-    HOME = 37,
-    END = 38,
-    CAPS_LOCK = 39,
-    SCROLL_LOCK = 40,
-    NUM_LOCK = 41,
-    PRINT_SCREEN = 42,
-    PAUSE = 43,
-    A = 44,
-    B = 45,
-    C = 46,
-    D = 47,
-    E = 48,
-    F = 49,
-    G = 50,
-    H = 51,
-    I = 52,
-    J = 53,
-    K = 54,
-    L = 55,
-    M = 56,
-    N = 57,
-    O = 58,
-    P = 59,
-    Q = 60,
-    R = 61,
-    S = 62,
-    T = 63,
-    U = 64,
-    V = 65,
-    W = 66,
-    X = 67,
-    Y = 68,
-    Z = 69,
-    F1 = 70,
-    F2 = 71,
-    F3 = 72,
-    F4 = 73,
-    F5 = 74,
-    F6 = 75,
-    F7 = 76,
-    F8 = 77,
-    F9 = 78,
-    F10 = 79,
-    F11 = 80,
-    F12 = 81,
-    F13 = 82,
-    F14 = 83,
-    F15 = 84,
-    F16 = 85,
-    F17 = 86,
-    F18 = 87,
-    F19 = 88,
-    F20 = 89,
-    F21 = 90,
-    F22 = 91,
-    F23 = 92,
-    F24 = 93,
-    F25 = 94,
-    KP_0 = 95,
-    KP_1 = 96,
-    KP_2 = 97,
-    KP_3 = 98,
-    KP_4 = 99,
-    KP_5 = 100,
-    KP_6 = 101,
-    KP_7 = 102,
-    KP_8 = 103,
-    KP_9 = 104,
-    KP_DECIMAL = 105,
-    KP_DIVIDE = 106,
-    KP_MULTIPLY = 107,
-    KP_SUBTRACT = 108,
-    KP_ADD = 109,
-    KP_ENTER = 110,
-    KP_EQUAL = 111,
-    LEFT_SHIFT = 112,
-    LEFT_CONTROL = 113,
-    LEFT_ALT = 114,
-    LEFT_SUPER = 115,
-    RIGHT_SHIFT = 116,
-    RIGHT_CONTROL = 117,
-    RIGHT_ALT = 118,
-    RIGHT_SUPER = 119,
-    MENU = 120,
-    LAST = ScancodeEnum.Menu,
+const window_system = @import("window_system.zig");
+const Platform = window_system.Platform;
+const PlatformError = window_system.PlatformError;
+
+const MonitorState = struct {
+    ramp: window_system.GammaRamp,
 };
+
+pub fn setup() PlatformError!Platform {
+    return Platform{
+        .init = init,
+        .terminate = terminate,
+
+        // monitor
+        .free_monitor = free_monitor,
+        .get_monitor_pos = get_monitor_pos,
+        .get_monitor_content_scale = get_monitor_content_scale,
+        .get_monitor_workarea = get_monitor_workarea,
+        .get_video_modes = get_video_modes,
+        .get_video_mode = get_video_mode,
+        .get_gamma_ramp = get_gamma_ramp,
+        .set_gamma_ramp = set_gamma_ramp,
+
+        // window
+        .create_window = create_window,
+        .destroy_window = destroy_window,
+        .set_window_title = set_window_title,
+        .set_window_icon = set_window_icon,
+        .get_window_pos = get_window_pos,
+        .set_window_pos = set_window_pos,
+        .get_window_size = get_window_size,
+        .set_window_size = set_window_size,
+        .set_window_size_limits = set_window_size_limits,
+        .set_window_aspect_ratio = set_window_aspect_ratio,
+        .get_framebuffer_size = get_framebuffer_size,
+        .get_window_frame_size = get_window_frame_size,
+        .get_window_content_scale = get_window_content_scale,
+        .iconify_window = iconify_window,
+        .restore_window = restore_window,
+        .maximize_window = maximize_window,
+        .show_window = show_window,
+        .hide_window = hide_window,
+        .request_window_attention = request_window_attention,
+        .focus_window = focus_window,
+        .set_window_monitor = set_window_monitor,
+        .window_focused = window_focused,
+        .window_iconified = window_iconified,
+        .window_visible = window_visible,
+        .window_maximized = window_maximized,
+        .window_hovered = window_hovered,
+        .framebuffer_transparent = framebuffer_transparent,
+        .get_window_opacity = get_window_opacity,
+        .set_window_resizable = set_window_resizable,
+        .set_window_decorated = set_window_decorated,
+        .set_window_floating = set_window_floating,
+        .set_window_opacity = set_window_opacity,
+        .set_window_mouse_passthrough = set_window_mouse_passthrough,
+        .poll_events = poll_events,
+        .wait_events = wait_events,
+        .wait_events_timeout = wait_events_timeout,
+        .post_empty_event = post_empty_event,
+    };
+}
+
+pub fn init(winsys: *window_system.WindowSystem) void {
+    poll_monitors(winsys);
+}
+
+pub fn terminate(winsys: *window_system.WindowSystem) void {
+    _ = winsys;
+}
+
+fn poll_monitors(winsys: *window_system.WindowSystem) !void {
+    const dpi: f32 = 141;
+    const mode: window_system.VideoMode = winsys.platform.get_video_mode();
+    const null_monitor: window_system.Monitor = .{
+        .name = "Null SuperNoop 0",
+        .widthMM = mode.width * 25.4 / dpi,
+        .heightMM = mode.height * 25.4 / dpi,
+    };
+    winsys.monitors.clearRetainingCapacity();
+    try winsys.monitors.append(null_monitor);
+}
+
+pub fn free_monitor() void {
+    return;
+}
+
+pub fn get_monitor_pos() void {
+    return;
+}
+
+pub fn get_monitor_content_scale() void {
+    return;
+}
+
+pub fn get_monitor_workarea() void {
+    return;
+}
+
+pub fn get_video_modes() void {
+    return;
+}
+
+pub fn get_video_mode() void {
+    return window_system.VideoMode{
+        .width = 1920,
+        .height = 1080,
+        .redBits = 8,
+        .greenBits = 8,
+        .blueBits = 8,
+        .refreshRate = 60,
+    };
+}
+
+pub fn get_gamma_ramp() void {
+    return;
+}
+
+pub fn set_gamma_ramp() void {
+    return;
+}
+
+pub fn create_window() void {
+    return;
+}
+
+pub fn destroy_window() void {
+    return;
+}
+
+pub fn set_window_title() void {
+    return;
+}
+
+pub fn set_window_icon() void {
+    return;
+}
+
+pub fn get_window_pos() void {
+    return;
+}
+
+pub fn set_window_pos() void {
+    return;
+}
+
+pub fn get_window_size() void {
+    return;
+}
+
+pub fn set_window_size() void {
+    return;
+}
+
+pub fn set_window_size_limits() void {
+    return;
+}
+
+pub fn set_window_aspect_ratio() void {
+    return;
+}
+
+pub fn get_framebuffer_size() void {
+    return;
+}
+
+pub fn get_window_frame_size() void {
+    return;
+}
+
+pub fn get_window_content_scale() void {
+    return;
+}
+
+pub fn iconify_window() void {
+    return;
+}
+
+pub fn restore_window() void {
+    return;
+}
+
+pub fn maximize_window() void {
+    return;
+}
+
+pub fn show_window() void {
+    return;
+}
+
+pub fn hide_window() void {
+    return;
+}
+
+pub fn request_window_attention() void {
+    return;
+}
+
+pub fn focus_window() void {
+    return;
+}
+
+pub fn set_window_monitor() void {
+    return;
+}
+
+pub fn window_focused() void {
+    return;
+}
+
+pub fn window_iconified() void {
+    return;
+}
+
+pub fn window_visible() void {
+    return;
+}
+
+pub fn window_maximized() void {
+    return;
+}
+
+pub fn window_hovered() void {
+    return;
+}
+
+pub fn framebuffer_transparent() void {
+    return;
+}
+
+pub fn get_window_opacity() void {
+    return;
+}
+
+pub fn set_window_resizable() void {
+    return;
+}
+
+pub fn set_window_decorated() void {
+    return;
+}
+
+pub fn set_window_floating() void {
+    return;
+}
+
+pub fn set_window_opacity() void {
+    return;
+}
+
+pub fn set_window_mouse_passthrough() void {
+    return;
+}
+
+pub fn poll_events() void {
+    return;
+}
+
+pub fn wait_events() void {
+    return;
+}
+
+pub fn wait_events_timeout() void {
+    return;
+}
+
+pub fn post_empty_event() void {
+    return;
+}
