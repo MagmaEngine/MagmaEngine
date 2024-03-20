@@ -6,95 +6,65 @@ const MonitorState = struct {
     ramp: WindowSystem.GammaRamp,
 };
 
-pub fn setup() Platform {
-    return Platform{
-        .id = WindowSystem.PlatformEnum.NULL,
-        .init = init,
-        .terminate = terminate,
-
-        // monitor
-        .free_monitor = free_monitor,
-        .get_monitor_pos = get_monitor_pos,
-        .get_monitor_content_scale = get_monitor_content_scale,
-        .get_monitor_workarea = get_monitor_workarea,
-        .get_video_modes = get_video_modes,
-        .get_video_mode = get_video_mode,
-        .get_gamma_ramp = get_gamma_ramp,
-        .set_gamma_ramp = set_gamma_ramp,
-
-        // window
-        .create_window = create_window,
-        .destroy_window = destroy_window,
-        .set_window_title = set_window_title,
-        .set_window_icon = set_window_icon,
-        .get_window_pos = get_window_pos,
-        .set_window_pos = set_window_pos,
-        .get_window_size = get_window_size,
-        .set_window_size = set_window_size,
-        .set_window_size_limits = set_window_size_limits,
-        .set_window_aspect_ratio = set_window_aspect_ratio,
-        .get_framebuffer_size = get_framebuffer_size,
-        .get_window_frame_size = get_window_frame_size,
-        .get_window_content_scale = get_window_content_scale,
-        .iconify_window = iconify_window,
-        .restore_window = restore_window,
-        .maximize_window = maximize_window,
-        .show_window = show_window,
-        .hide_window = hide_window,
-        .request_window_attention = request_window_attention,
-        .focus_window = focus_window,
-        .set_window_monitor = set_window_monitor,
-        .window_focused = window_focused,
-        .window_iconified = window_iconified,
-        .window_visible = window_visible,
-        .window_maximized = window_maximized,
-        .window_hovered = window_hovered,
-        .framebuffer_transparent = framebuffer_transparent,
-        .get_window_opacity = get_window_opacity,
-        .set_window_resizable = set_window_resizable,
-        .set_window_decorated = set_window_decorated,
-        .set_window_floating = set_window_floating,
-        .set_window_opacity = set_window_opacity,
-        .set_window_mouse_passthrough = set_window_mouse_passthrough,
-        .poll_events = poll_events,
-        .wait_events = wait_events,
-        .wait_events_timeout = wait_events_timeout,
-        .post_empty_event = post_empty_event,
-    };
+pub fn setup(winsys: *WindowSystem) void {
+    winsys.platform_id = WindowSystem.Platform.NULL;
+    winsys.init_platform = init;
+    winsys.terminate = terminate;
+    // monitor
+    winsys.free_monitor = free_monitor;
+    winsys.get_monitor_pos = get_monitor_pos;
+    winsys.get_monitor_content_scale = get_monitor_content_scale;
+    winsys.get_monitor_workarea = get_monitor_workarea;
+    winsys.get_video_modes = get_video_modes;
+    winsys.get_video_mode = get_video_mode;
+    winsys.get_gamma_ramp = get_gamma_ramp;
+    winsys.set_gamma_ramp = set_gamma_ramp;
+    // window
+    winsys.create_window = create_window;
+    winsys.destroy_window = destroy_window;
+    winsys.set_window_title = set_window_title;
+    winsys.set_window_icon = set_window_icon;
+    winsys.get_window_pos = get_window_pos;
+    winsys.set_window_pos = set_window_pos;
+    winsys.get_window_size = get_window_size;
+    winsys.set_window_size = set_window_size;
+    winsys.set_window_size_limits = set_window_size_limits;
+    winsys.set_window_aspect_ratio = set_window_aspect_ratio;
+    winsys.get_framebuffer_size = get_framebuffer_size;
+    winsys.get_window_frame_size = get_window_frame_size;
+    winsys.get_window_content_scale = get_window_content_scale;
+    winsys.iconify_window = iconify_window;
+    winsys.restore_window = restore_window;
+    winsys.maximize_window = maximize_window;
+    winsys.show_window = show_window;
+    winsys.hide_window = hide_window;
+    winsys.request_window_attention = request_window_attention;
+    winsys.focus_window = focus_window;
+    winsys.set_window_monitor = set_window_monitor;
+    winsys.window_focused = window_focused;
+    winsys.window_iconified = window_iconified;
+    winsys.window_visible = window_visible;
+    winsys.window_maximized = window_maximized;
+    winsys.window_hovered = window_hovered;
+    winsys.framebuffer_transparent = framebuffer_transparent;
+    winsys.get_window_opacity = get_window_opacity;
+    winsys.set_window_resizable = set_window_resizable;
+    winsys.set_window_decorated = set_window_decorated;
+    winsys.set_window_floating = set_window_floating;
+    winsys.set_window_opacity = set_window_opacity;
+    winsys.set_window_mouse_passthrough = set_window_mouse_passthrough;
+    winsys.poll_events = poll_events;
+    winsys.wait_events = wait_events;
+    winsys.wait_events_timeout = wait_events_timeout;
+    winsys.post_empty_event = post_empty_event;
 }
 
 pub fn init(winsys: *WindowSystem) std.mem.Allocator.Error!void {
-    try poll_monitors(winsys);
+    _ = winsys;
 }
 
 pub fn terminate(winsys: *WindowSystem) void {
     _ = winsys;
-}
-
-fn poll_monitors(winsys: *WindowSystem) std.mem.Allocator.Error!void {
-    const dpi: f32 = 141;
-    const mode: WindowSystem.VideoMode = winsys.platform.get_video_mode();
-    const null_monitor: WindowSystem.Monitor = .{
-        .name = "Null SuperNoop 0",
-        .widthMM = @as(f32, @floatFromInt(mode.width)) * 25.4 / dpi,
-        .heightMM = @as(f32, @floatFromInt(mode.height)) * 25.4 / dpi,
-        .modes = &[1]WindowSystem.VideoMode{mode},
-        .current_mode = 0,
-        .original_ramp = .{
-            .red = &[0]u16{},
-            .green = &[0]u16{},
-            .blue = &[0]u16{},
-            .size = 0,
-        },
-        .current_ramp = .{
-            .red = &[0]u16{},
-            .green = &[0]u16{},
-            .blue = &[0]u16{},
-            .size = 0,
-        },
-    };
-    winsys.monitors.clearRetainingCapacity();
-    try winsys.monitors.append(null_monitor);
 }
 
 pub fn free_monitor() void {
@@ -121,9 +91,6 @@ pub fn get_video_mode() WindowSystem.VideoMode {
     return WindowSystem.VideoMode{
         .width = 1920,
         .height = 1080,
-        .redBits = 8,
-        .greenBits = 8,
-        .blueBits = 8,
         .refreshRate = 60,
     };
 }
